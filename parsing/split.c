@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-t_token *split_value(const char *line)
+t_token *split_value(t_shell *sh, char *line)
 {
     t_token       *head = NULL;
     t_token       *tail = NULL;
@@ -21,7 +21,7 @@ t_token *split_value(const char *line)
             split_redir(&line, &head, &tail);
             continue;
         }
-        split_word(&line, &head, &tail);
+        split_word(sh, &line, &head, &tail);
     }
     return head;
 }

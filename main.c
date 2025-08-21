@@ -2,13 +2,13 @@
 
 volatile sig_atomic_t shell_sig = 0;
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
 	t_shell	sh;
-
+    
 	sh.last_status = 0;
-    sh.envp = NULL;
+    sh.envp = copy_envp(envp);
 	init_signal();
 	while (1)
 	{
@@ -32,6 +32,6 @@ int	main(void)
 		}
 		free(input);
 	}
+	free_envp(sh.envp);
 	return (shell_sig);
 }
-

@@ -9,7 +9,8 @@ SRCS = main.c\
 	parsing/split_pipe.c\
 	parsing/split_redirection.c\
 	parsing/split_word.c\
-	parsing/split_word2.c\
+	parsing/split_word_append.c\
+	parsing/split_word_append2.c\
 	parsing/validate_syntax.c\
 	execute/execute.c\
 	builtin_func/builtin_echo.c\

@@ -20,17 +20,10 @@ typedef enum e_toktype {
     TOK_HEREDOC,
     TOK_APPEND,
 }	t_toktype;
-//   '' ""
-typedef enum e_quote {
-    Q_NONE,
-    Q_SINGLE,
-    Q_DOUBLE
-}	t_quote;
 
 typedef struct s_token {
     char        *val;
     t_toktype   type;
-    t_quote     quote;
     struct s_token *next;
 }   t_token;
 
@@ -43,17 +36,22 @@ int		main();
 void	sigint_handler(int sig);
 void	init_signal(void);
 void	parsing(t_shell *sh, char *input);
-t_token *split_value(const char *line);
-void	split_pipe(const char **line, t_token **head, t_token **tail);
-void	split_redir(const char **line, t_token **head, t_token **tail);
-void	split_word(const char **line, t_token **head, t_token **tail);
-int		quoted_segment(const char **line, char **acc, t_quote *qsummary);
+t_token *split_value(t_shell *sh, char *line);
+void	split_pipe(char **line, t_token **head, t_token **tail);
+void	split_redir(char **line, t_token **head, t_token **tail);
+void	split_word(t_shell *sh, char **line, t_token **head, t_token **tail);\
+void	process_character(t_shell *sh, char **line, char **acc);
+void	append_expanded_val(char **acc, char *expanded_val);
+char	*get_expanded_value(t_shell *sh, char **line);
 int     validate_syntax(t_shell *sh, t_token *t);
 void	execute(t_shell *sh, t_token *input);
-void	ft_echo(t_shell *sh, char **input);
+void	ft_echo(t_shell *sh, t_token *t);
 int		is_space(char c);
 int		is_quote(char c);
 int		is_meta(char c);
+void    ft_env(t_shell *sh);
+char    **copy_envp(char **envp);
+void    free_envp(char **envp);
 void	free_tokens(t_token *t);
 
 #endif

@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-static t_toktype get_redir_type_1(const char **line)
+static t_toktype get_redir_type_1(char **line)
 {
     t_toktype rtype;
 
@@ -17,7 +17,7 @@ static t_toktype get_redir_type_1(const char **line)
     return rtype;
 }
 
-static t_toktype get_redir_type_2(const char **line)
+static t_toktype get_redir_type_2(char **line)
 {
     t_toktype rtype;
 
@@ -34,7 +34,7 @@ static t_toktype get_redir_type_2(const char **line)
     return rtype;
 }
 
-static t_toktype get_redir_type(const char **line)
+static t_toktype get_redir_type(char **line)
 {
     if (**line == '<')
     {
@@ -46,7 +46,7 @@ static t_toktype get_redir_type(const char **line)
     }
 }
 
-void split_redir(const char **line, t_token **head, t_token **tail)
+void split_redir(char **line, t_token **head, t_token **tail)
 {
     t_toktype rtype;
 	t_token *node;
@@ -57,7 +57,6 @@ void split_redir(const char **line, t_token **head, t_token **tail)
 		return;
     node->val   = ft_strdup("");
     node->type  = rtype;
-    node->quote = Q_NONE;
     node->next  = NULL;
     if (!*head)
 		*head = node;
