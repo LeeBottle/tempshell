@@ -16,9 +16,9 @@ void	execute(t_shell *sh, t_token *input)
 		else if (ft_strncmp(input->val, "cd", 3) == 0 && input->type == TOK_WORD)
 			ft_cd(sh, input);
 		else if (ft_strncmp(input->val, "pwd", 4) == 0 && input->type == TOK_WORD)
-			ft_pwd();
+			return_value = ft_pwd(sh, input);
 		else if (ft_strncmp(input->val, "export", 7) == 0 && input->type == TOK_WORD)
-			ft_export();
+			return_value = ft_export(sh, input);
 		else if (ft_strncmp(input->val, "unset", 6) == 0 && input->type == TOK_WORD)
 			ft_unset();
 		else if (ft_strncmp(input->val, "env", 4) == 0 && input->type == TOK_WORD)

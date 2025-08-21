@@ -47,6 +47,8 @@ int     validate_syntax(t_shell *sh, t_token *t);
 void	execute(t_shell *sh, t_token *input);
 char	*ft_echo(t_shell *sh, t_token *input);
 void	ft_cd(t_shell *sh, t_token *input);
+char	*ft_pwd(t_shell *sh, t_token *input);
+char	*ft_export(t_shell *sh, t_token *input);
 int		is_space(char c);
 int		is_quote(char c);
 int		is_meta(char c);
