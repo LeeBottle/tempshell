@@ -12,28 +12,16 @@ void    execute(t_shell *sh, t_token *input)
     stdin_backup = dup(STDIN_FILENO);
     stdout_backup = dup(STDOUT_FILENO);
     current_token = input;
-    while (current_token)
-    {
-        if (current_token->type == TOK_STDIN)
-        {
-			
-            fd = open(current_token->next->val, O_RDONLY);
-            if (fd < 0)
-            {
-                perror("minishell");
-                sh->last_status = 1;
-                dup2(stdin_backup, STDIN_FILENO);
-                close(stdin_backup);
-                dup2(stdout_backup, STDOUT_FILENO);
-                close(stdout_backup);
-                return;
-            }
-            dup2(fd, STDIN_FILENO);
-            close(fd);
-        }
-        // ft_stdout, ft_append 추가
-        current_token = current_token->next;
-    }
+   	while (current_token)
+	{
+		if (current_token->type == TOK_STDIN)
+			ft_stdin(sh, current_token, stdin_backup, stdout_backup);
+		else if (current_token->type == TOK_STDOUT)
+			ft_stdout(sh, current_token, stdin_backup, stdout_backup);
+		else if (current_token->type == TOK_APPEND)
+			ft_append(sh, current_token, stdin_backup, stdout_backup);
+		current_token = current_token->next;
+	}
     current_token = input;
     while (current_token)
     {
@@ -52,7 +40,7 @@ void    execute(t_shell *sh, t_token *input)
             else if (ft_strncmp(current_token->val, "env", 4) == 0)
                 ft_env(sh);
             else if (ft_strncmp(current_token->val, "exit", 5) == 0)
-                ft_exit(sh);*/
+                ft_exit(sh);
             else
                 sh->last_status = 127;
             break;

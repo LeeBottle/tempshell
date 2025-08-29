@@ -9,7 +9,7 @@ void	ft_pwd(t_shell *sh, t_token *input)
 	{
 		perror("minishell: pwd");
 		sh->last_status = 1;
-		return (NULL);
+		return ;
 	}
 	ft_putstr_fd(temp, 1);
 	ft_putstr_fd("\n", 1);

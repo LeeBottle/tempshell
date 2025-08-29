@@ -24,56 +24,32 @@ static void	sort_envp(char **envp_copy, int count)
 	}
 }
 
-static char	*print_list(char **envp_copy, int count, char *result)
+static void	print_list_stdout(char **envp_copy, int count)
 {
 	int		i;
-	char	*temp_str;
-	char	*key;
-	char	*value;
 	char	*equal_sign;
 
 	i = 0;
 	while (i < count)
 	{
+		ft_putstr_fd("declare -x ", 1);
 		equal_sign = ft_strchr(envp_copy[i], '=');
-		temp_str = ft_strjoin(result, "declare -x ");
-		free(result);
-		result = temp_str;
 		if (equal_sign)
 		{
-			key = ft_substr(envp_copy[i], 0, equal_sign - envp_copy[i]);
-			value = equal_sign + 1;
-			temp_str = ft_strjoin(result, key);
-			free(result);
-			result = temp_str;
-			free(key);
-			temp_str = ft_strjoin(result, "=\"");
-			free(result);
-			result = temp_str;
-			temp_str = ft_strjoin(result, value);
-			free(result);
-			result = temp_str;
-			temp_str = ft_strjoin(result, "\"");
-			free(result);
-			result = temp_str;
+			write(1, envp_copy[i], equal_sign - envp_copy[i]);
+			ft_putstr_fd("=\"", 1);
+			ft_putstr_fd(equal_sign + 1, 1);
+			ft_putstr_fd("\"", 1);
 		}
 		else
-		{
-			temp_str = ft_strjoin(result, envp_copy[i]);
-			free(result);
-			result = temp_str;
-		}
-		temp_str = ft_strjoin(result, "\n");
-		free(result);
-		result = temp_str;
+			ft_putstr_fd(envp_copy[i], 1);
+		ft_putstr_fd("\n", 1);
 		i++;
 	}
-	return (result);
 }
 
-char *export_list(t_shell *sh)
+void	export_list(t_shell *sh)
 {
-	char	*result;
 	char	**envp_copy;
 	int		i;
 	int		count;
@@ -83,7 +59,7 @@ char *export_list(t_shell *sh)
 		count++;
 	envp_copy = malloc(sizeof(char *) * (count + 1));
 	if (!envp_copy)
-		return (ft_strdup(""));
+		return ;
 	i = 0;
 	while (i < count)
 	{
@@ -92,9 +68,7 @@ char *export_list(t_shell *sh)
 	}
 	envp_copy[i] = NULL;
 	sort_envp(envp_copy, count);
-	result = ft_strdup("");
-	result = print_list(envp_copy, count, result);
+	print_list_stdout(envp_copy, count);
 	free(envp_copy);
 	sh->last_status = 0;
-	return (result);
 }

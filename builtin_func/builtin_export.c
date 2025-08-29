@@ -53,17 +53,19 @@ static void	add_new_env(t_shell *sh, char *key, char *value)
 	sh->envp = new_envp;
 }
 
-char	*ft_export(t_shell *sh, t_token *input)
+void	ft_export(t_shell *sh, t_token *input)
 {
 	int		i;
-	char	*temp;
 	char	*key;
 	char	*value;
 
 	input = input->next;
 	if (input == NULL || input->type != TOK_WORD)
-		return(export_list(sh));
-	while (input != NULL)
+	{
+		export_list(sh);
+		return ;
+	}
+	while (input != NULL && input->type == TOK_WORD)
 	{
 		i = 0;
 		while (input->val[i] != '\0')
@@ -72,19 +74,23 @@ char	*ft_export(t_shell *sh, t_token *input)
 				break;
 			i++;
 		}
-		if (i == 0)
+		if (i == 0 || !ft_isalpha(input->val[0]))
 		{
-			ft_putstr_fd("minishell: export: `",2);
+			ft_putstr_fd("minishell: export: `", 2);
 			ft_putstr_fd(input->val, 2);
-			ft_putstr_fd("': not a valid identifier\n",2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
+			sh->last_status = 1;
 		}
-		key = ft_substr(input->val, 0, i);
-		value = ft_substr(input->val, i + 1, ft_strlen(input->val) - i - 1);
-		if (!update_existing_env(sh, key, value))
-			add_new_env(sh, key, value);
-		free(key);
-		free(value);
+		else
+		{
+			key = ft_substr(input->val, 0, i);
+			value = ft_substr(input->val, i + 1, ft_strlen(input->val) - i - 1);
+			if (!update_existing_env(sh, key, value))
+				add_new_env(sh, key, value);
+			free(key);
+			free(value);
+			sh->last_status = 0;
+		}
 		input = input->next;
 	}
-	return (0);
 }
