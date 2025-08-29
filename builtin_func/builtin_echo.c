@@ -16,7 +16,7 @@ static void opt(t_token **input, int *newline)
 	(*input) = (*input)->next;
 }
 
-char	*ft_echo(t_shell *sh, t_token *input)
+void	ft_echo(t_shell *sh, t_token *input)
 {
 	int		newline;
     char    *result;
@@ -29,25 +29,14 @@ char	*ft_echo(t_shell *sh, t_token *input)
 		opt(&input, &newline);
 	while (input && input->type == TOK_WORD)
 	{
-		temp = ft_strjoin(result, input->val);
-		free(result);
-        result = temp;
+		ft_putstr_fd(input->val, 1);
         input = input->next;
 		if (input && input->type == TOK_WORD)
-        {
-            temp = ft_strjoin(result, " ");
-            free(result);
-            result = temp;
-        }
+			ft_putstr_fd(" ", 1);
 	}
 	if (newline == 1)
-	{
-        temp = ft_strjoin(result, "\n");
-        free(result);
-        result = temp;
-    }
+		ft_putstr_fd("\n", 1);
     sh->last_status = 0;
-    return (result);
 }
 
 

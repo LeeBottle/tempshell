@@ -4,10 +4,11 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <signal.h>
+# include <signal.h>t
 # include <termios.h>
 # include <sys/ioctl.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "./libft/libft.h"
@@ -50,9 +51,10 @@ char	*get_expanded_value(t_shell *sh, char **line);
 int     validate_syntax(t_shell *sh, t_token *t);
 int		pipe_end(t_shell *sh, t_token **t_head);
 void	execute(t_shell *sh, t_token *input);
-char	*ft_echo(t_shell *sh, t_token *input);
+void	ft_stdin(t_shell *sh, t_token *input);
+void	ft_echo(t_shell *sh, t_token *input);
 void	ft_cd(t_shell *sh, t_token *input);
-char	*ft_pwd(t_shell *sh, t_token *input);
+void	ft_pwd(t_shell *sh, t_token *input);
 char	*ft_export(t_shell *sh, t_token *input);
 char	*export_list(t_shell *sh);
 void	ft_unset(t_shell *sh, t_token *input);
