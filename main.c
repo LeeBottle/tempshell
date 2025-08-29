@@ -9,21 +9,16 @@ int	main(int argc, char **argv, char **envp)
     
 	sh.last_status = 0;
     sh.envp = copy_envp(envp);
-	init_signal();
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
+		shell_sig = 0;
 		input = readline("minishell$ ");
 		if (!input)
-		{
-			printf("exit\n");
-			break;
-		}
-		if (shell_sig == SIGINT)
-		{
-            sh.last_status = 130;
-            shell_sig = 0;
-            free(input);
-            continue;
+        {
+            printf("exit\n");
+            break;
         }
 		if (*input)
 		{

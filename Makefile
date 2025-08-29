@@ -12,11 +12,13 @@ SRCS = main.c\
 	parsing/split_word_append.c\
 	parsing/split_word_append2.c\
 	parsing/validate_syntax.c\
+	parsing/pipe_end.c\
 	execute/execute.c\
 	builtin_func/builtin_echo.c\
 	builtin_func/builtin_cd.c\
 	builtin_func/builtin_pwd.c\
 	builtin_func/builtin_export.c\
+	builtin_func/builtin_export2.c\
 	builtin_func/builtin_unset.c\
 	builtin_func/builtin_env.c\
 	builtin_func/builtin_exit.c\

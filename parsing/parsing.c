@@ -21,6 +21,8 @@ void	parsing(t_shell *sh, char *input)
 	t_token *t;
 	
 	t = split_value(sh, input);
+	if (pipe_end(sh, &t))
+        return;
 	if (validate_syntax(sh, t))
 	{
         free_tokens(t);
@@ -30,3 +32,5 @@ void	parsing(t_shell *sh, char *input)
 	execute(sh, t);
     free_tokens(t);
 }
+
+//<<추가

@@ -81,6 +81,6 @@ void process_character(t_shell *sh, char **line, char **acc)
     else
     {
         if (!etc_char(line, acc))
-            return;
+            return;	
     }
 }

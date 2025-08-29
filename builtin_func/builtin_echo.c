@@ -12,7 +12,6 @@ static void opt(t_token **input, int *newline)
 			return ;
 		opt++;
 	}
-	printf("----\n");
 	*newline = 0;
 	(*input) = (*input)->next;
 }
@@ -41,6 +40,7 @@ char	*ft_echo(t_shell *sh, t_token *input)
             result = temp;
         }
 	}
+	if (newline == 1)
 	{
         temp = ft_strjoin(result, "\n");
         free(result);

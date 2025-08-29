@@ -10,8 +10,6 @@ static const char *tok_lexeme(t_token *t)
 {
     if (!t)
 		return "\\n";
-    if (t->type == TOK_PIPE)
-		return "|";
     if (t->type == TOK_STDIN)
 		return "<";
     if (t->type == TOK_STDOUT)

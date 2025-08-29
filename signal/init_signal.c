@@ -1,12 +1,13 @@
 #include "../minishell.h"
 
-void	sigint_handler(int sig)
+void sigint_handler(int sig)
 {
-	shell_sig = sig;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+    shell_sig = 1;
+	write(0, "\n", 1);
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+    rl_replace_line("", 0);
+    rl_on_new_line();
+    rl_redisplay();
 }
 
 void    init_signal(void)

@@ -1,6 +1,5 @@
 #include "../minishell.h"
 
-#include "../minishell.h"
 
 void	execute(t_shell *sh, t_token *input)
 {
@@ -20,11 +19,11 @@ void	execute(t_shell *sh, t_token *input)
 		else if (ft_strncmp(input->val, "export", 7) == 0 && input->type == TOK_WORD)
 			return_value = ft_export(sh, input);
 		else if (ft_strncmp(input->val, "unset", 6) == 0 && input->type == TOK_WORD)
-			ft_unset();
+			ft_unset(sh, input);
 		else if (ft_strncmp(input->val, "env", 4) == 0 && input->type == TOK_WORD)
 			ft_env(sh);
 		else if (ft_strncmp(input->val, "exit", 5) == 0 && input->type == TOK_WORD)
-			ft_exit();
+			ft_exit(sh);
 		else
 			sh->last_status = 127;
 		input = input->next;
