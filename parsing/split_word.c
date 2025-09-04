@@ -23,25 +23,24 @@ static void word_node(t_token **head, t_token **tail, char *acc)
 
 void split_word(t_shell *sh, char **line, t_token **head, t_token **tail)
 {
-    char *acc;
+	char *acc;
 
-    acc = ft_strdup("");
-    if (!acc)
-    {
-        shell_sig = 1;
-        return;
-    }
-    while (**line && !is_space(**line) && !is_meta(**line))
-    {
-        process_character(sh, line, &acc);
-        if (!acc)
-            return;
-    }
-    if (acc)
-    {
-        if (acc[0] != '\0')
-            word_node(head, tail, acc);
-        else
-            free(acc);
-    }
+	acc = ft_strdup("");
+	if (!acc)
+	{
+		shell_sig = 1;
+		return;
+	}
+	while (**line && !is_space(**line) && !is_meta(**line))
+	{
+		process_character(sh, line, &acc);
+		if (!acc)
+			return;
+	}
+	if (acc && acc[0] != '\0')
+	{
+		word_node(head, tail, acc);
+	}
+	else
+		free(acc);
 }

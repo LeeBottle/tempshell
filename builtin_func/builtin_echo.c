@@ -27,7 +27,7 @@ void	ft_echo(t_shell *sh, t_token *input)
 	input = input->next;
 	if (input && ft_strncmp(input->val, "-", 1) == 0)
 		opt(&input, &newline);
-	while (input && input->type == TOK_WORD)
+	while (input && input->type != TOK_PIPE)
 	{
 		ft_putstr_fd(input->val, 1);
         input = input->next;

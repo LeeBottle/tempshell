@@ -13,7 +13,10 @@ SRCS = main.c\
 	parsing/split_word_append2.c\
 	parsing/validate_syntax.c\
 	parsing/pipe_end.c\
+	parsing/token_to_cmd.c\
+	parsing/token_to_cmd_utils.c\
 	execute/execute.c\
+	builtin_func/builtin_std.c\
 	builtin_func/builtin_echo.c\
 	builtin_func/builtin_cd.c\
 	builtin_func/builtin_pwd.c\
@@ -22,7 +25,6 @@ SRCS = main.c\
 	builtin_func/builtin_unset.c\
 	builtin_func/builtin_env.c\
 	builtin_func/builtin_exit.c\
-	builtin_func/builtin_std.c\
 	utils.c
 
 LIBFTDIR = ./libft

@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-static void temp (t_token *input)
+/*static void temp (t_token *input)
 {
 	for (t_token *p = input; p; p = p->next) {
         const char *tn =
@@ -14,21 +14,22 @@ static void temp (t_token *input)
         else
             printf("[%-4s]\n", tn);
     }
-}
+}*/
 
 void	parsing(t_shell *sh, char *input)
 {
 	t_token *t;
+    t_cmd	*cmds;
 	
 	t = split_value(sh, input);
-	if (pipe_end(sh, &t))
-        return;
-	if (validate_syntax(sh, t))
-	{
+    if (validate_syntax(sh, t)) //파이프 뒤에 파이프가 올시 에러처리를 위한 조치
+    {
         free_tokens(t);
         return;
     }
-	temp (t);
+	if (pipe_end(sh, &t))
+        return;
+	cmds = token_to_cmd(t); // 토큰 -> t_cmd 변환 + heredoc readline
 	execute(sh, t);
     free_tokens(t);
 }
