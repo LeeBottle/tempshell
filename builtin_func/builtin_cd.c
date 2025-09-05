@@ -1,14 +1,22 @@
 #include "../minishell.h"
 
-void	ft_cd(t_shell *sh, t_token *input)
+void	ft_cd(t_shell *sh, char **argv)
 {
+	int		i;
 	char	*path;
 
-	input = input->next;
-	if (input == NULL || input->type != TOK_WORD)
+	i = 0;
+	while (argv[i])
+		i++;
+	if (i > 2)
+	{
+		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+		return ;
+	}
+	if (argv[1] == NULL)
 		path = getenv("HOME");
 	else
-		path = input->val;
+		path = argv[1];
 	if (chdir(path) != 0)
 	{
 		ft_putstr_fd("minishell: cd: ", 2);

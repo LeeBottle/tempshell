@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void	ft_pwd(t_shell *sh, t_token *input)
+void	ft_pwd(t_shell *sh)
 {
 	char	*temp;
 

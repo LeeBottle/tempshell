@@ -1,77 +1,90 @@
 #include "../minishell.h"
 
-void    execute(t_shell *sh, t_token *input)
+static int handle_redirections(t_cmd *cmd)
 {
-    t_token *current_token;
-    int     stdin_backup;
-    int     stdout_backup;
-    int     fd;
-	int		redir_failed;
+	int fd;
 
-    if (input == NULL)
-        return ;
-	redir_failed = 0;
-    stdin_backup = dup(STDIN_FILENO);
-    stdout_backup = dup(STDOUT_FILENO);
-    current_token = input;
-   	while (current_token)
+	if (cmd->infile)
 	{
-		if (current_token->type == TOK_STDIN)
+		fd = open(cmd->infile, O_RDONLY);
+		if (fd < 0)
 		{
-			if (ft_stdin(sh, current_token, stdin_backup, stdout_backup) != 0)
-			{
-                redir_failed = 1;
-                break;
-            }
+			perror(cmd->infile);
+			return (1);
 		}
-		else if (current_token->type == TOK_STDOUT)
-		{
-			if (ft_stdout(sh, current_token, stdin_backup, stdout_backup) != 0)
-			{
-                redir_failed = 1;
-                break;
-            }
-		}
-		else if (current_token->type == TOK_APPEND)
-		{
-			if (ft_append(sh, current_token, stdin_backup, stdout_backup) != 0)
-			{
-                redir_failed = 1;
-                break;
-            }
-		}
-		current_token = current_token->next;
+		dup2(fd, STDIN_FILENO);
+		close(fd);
 	}
-	if (!redir_failed)
+/*	if (cmd->heredoc)
 	{
-		current_token = input;
-		while (current_token)
+	}*/
+	if (cmd->outfile)
+	{
+		fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd < 0)
 		{
-			if (current_token->type == TOK_WORD)
-			{
-				if (ft_strncmp(current_token->val, "echo", 5) == 0)
-					ft_echo(sh, current_token);
-				else if (ft_strncmp(current_token->val, "cd", 3) == 0)
-					ft_cd(sh, current_token);
-				else if (ft_strncmp(current_token->val, "pwd", 4) == 0)
-					ft_pwd(sh, current_token);
-				else if (ft_strncmp(current_token->val, "export", 7) == 0)
-					ft_export(sh, current_token);
-				else if (ft_strncmp(current_token->val, "unset", 6) == 0)
-					ft_unset(sh, current_token);
-				else if (ft_strncmp(current_token->val, "env", 4) == 0)
-					ft_env(sh);
-				else if (ft_strncmp(current_token->val, "exit", 5) == 0)
-					ft_exit(sh);
-				else
-					sh->last_status = 127;
-				break;
-			}
-			current_token = current_token->next;
+			perror(cmd->outfile);
+			return (1);
 		}
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
 	}
-    dup2(stdin_backup, STDIN_FILENO);
-    dup2(stdout_backup, STDOUT_FILENO);
-    close(stdin_backup);
-    close(stdout_backup);
+	if (cmd->append)
+	{
+		fd = open(cmd->append, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fd < 0)
+		{
+			perror(cmd->append);
+			return (1);
+		}
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
+	}
+	return (0);
+}
+
+static int func_builtin(t_shell *sh, t_cmd *cmd)
+{
+	char *command;
+
+	command = cmd->argv[0];
+	if (ft_strncmp(command, "echo", 5) == 0)
+		ft_echo(sh, cmd->argv);
+	else if (ft_strncmp(command, "cd", 3) == 0)
+		ft_cd(sh, cmd->argv);
+	else if (ft_strncmp(command, "pwd", 4) == 0)
+		ft_pwd(sh);
+	else if (ft_strncmp(command, "export", 7) == 0)
+		ft_export(sh, cmd->argv);
+	else if (ft_strncmp(command, "unset", 6) == 0)
+		ft_unset(sh, cmd->argv);
+	else if (ft_strncmp(command, "env", 4) == 0)
+		ft_env(sh);
+	else if (ft_strncmp(command, "exit", 5) == 0)
+		ft_exit(sh);
+	else
+		return (0);
+	return (1);
+}
+
+void    execute(t_shell *sh, t_cmd *cmd)
+{
+	int stdin_backup;
+	int stdout_backup;
+
+	if (cmd == NULL || cmd->argv[0] == NULL)
+		return;
+	stdin_backup = dup(STDIN_FILENO);
+	stdout_backup = dup(STDOUT_FILENO);
+	if (handle_redirections(cmd) != 0)
+		sh->last_status = 1;
+	else
+	{
+		if (!func_builtin(sh, cmd))
+			execute_external(sh, cmd); 
+	}
+	dup2(stdin_backup, STDIN_FILENO);
+	dup2(stdout_backup, STDOUT_FILENO);
+	close(stdin_backup);
+	close(stdout_backup);
 }

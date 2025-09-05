@@ -45,15 +45,17 @@ static void	del_env(t_shell *sh, char *key)
 	free(result);
 }
 
-void	ft_unset(t_shell *sh, t_token *input)
+void	ft_unset(t_shell *sh, char **argv)
 {
-	input = input->next;
-	if (input == NULL || input->type != TOK_WORD)
+	int	i;
+
+	i = 1;
+	if (argv[i] == NULL)
 		return ;
-	while (input != NULL && input->type == TOK_WORD)
+	while (argv[i])
 	{
-		del_env(sh, input->val);
-		input = input->next;
+		del_env(sh, argv[i]);
+		i++;
 	}
 	sh->last_status = 0;
 }

@@ -25,6 +25,7 @@ SRCS = main.c\
 	builtin_func/builtin_unset.c\
 	builtin_func/builtin_env.c\
 	builtin_func/builtin_exit.c\
+	external_func/execute_external.c\
 	utils.c
 
 LIBFTDIR = ./libft
