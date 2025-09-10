@@ -23,7 +23,10 @@ void	execute(char **env, t_cmd *cmds)
 	if (cmds == NULL)
 		return;
 	if (cmds->next == NULL  && is_builtin(cmds))
+	{
 		is_direct(env, cmds);
+		return;
+	}
 	while (current_cmd != NULL)
 	{
 		if (current_cmd->next != NULL && pipe(pipe_fd) == -1)

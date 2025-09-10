@@ -23,7 +23,7 @@ void	ft_echo(char **argv)
 
 	newline = 1;
 	i = 1;
-	if (argv[i] && ft_strncmp(argv[i], "-", 1) == 0 && opt(argv[i]))
+	while (argv[i] && ft_strncmp(argv[i], "-", 1) == 0 && opt(argv[i]))
 	{
 		newline = 0;
 		i++;

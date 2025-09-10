@@ -59,8 +59,8 @@ void	append_expanded_val(char **acc, char *expanded_val);
 char	*get_expanded_value(t_shell *sh, char **line);
 int		validate_syntax(t_shell *sh, t_token *t);
 int		pipe_end(t_shell *sh, t_token **t_head);
-void	execute(char **env, t_cmd *cmd);
 
+void	execute(char **env, t_cmd *cmd);
 void	is_direct(char **env, t_cmd *cmds);
 int		handle_redirections(t_cmd *cmd);
 int		is_builtin(t_cmd *cmd);
@@ -68,12 +68,12 @@ int		func_builtin(char **env, t_cmd *cmd);
 
 void	ft_echo(char **argv);
 void	ft_cd(char **argv);
-void	ft_pwd();
+void	ft_pwd(void);
 void	ft_export(char **env, char **argv);
 void	export_list(char **env);
 void	ft_unset(char **env, char **argv);
 void	ft_env(char **env);
-void	ft_exit();
+void	ft_exit(void);
 void	execute_external(char **env, t_cmd *cmd);
 char	*get_cmd_path(char *cmd, char **env);
 
