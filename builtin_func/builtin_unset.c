@@ -1,12 +1,12 @@
 #include "../minishell.h"
 
-static void	add_new_env(t_shell *sh, char *result)
+static void	add_new_env(char **env, char *result)
 {
-	free_envp(sh->envp);
-	sh->envp = ft_split(result, '\n');
+	free_envp(env);
+	env = ft_split(result, '\n');
 }
 
-static int key_init(char *env_var, char *key)
+static int	key_init(char *env_var, char *key)
 {
 	int	key_len;
 
@@ -17,7 +17,7 @@ static int key_init(char *env_var, char *key)
 	return (0);
 }
 
-static void	del_env(t_shell *sh, char *key)
+static void	del_env(char **env, char *key)
 {
 	char	*temp;
 	char	*result;
@@ -25,9 +25,9 @@ static void	del_env(t_shell *sh, char *key)
 
 	result = ft_strdup("");
 	i = 0;
-	while (sh->envp[i])
+	while (env[i])
 	{
-		if (!key_init(sh->envp[i], key))
+		if (!key_init(env[i], key))
 		{
 			if (result[0] != '\0')
 			{
@@ -35,17 +35,17 @@ static void	del_env(t_shell *sh, char *key)
 				free(result);
 				result = temp;
 			}
-			temp = ft_strjoin(result, sh->envp[i]);
+			temp = ft_strjoin(result, env[i]);
 			free(result);
 			result = temp;
 		}
 		i++;
 	}
-	add_new_env(sh, result);
+	add_new_env(env, result);
 	free(result);
 }
 
-void	ft_unset(t_shell *sh, char **argv)
+void	ft_unset(char **env, char **argv)
 {
 	int	i;
 
@@ -54,8 +54,8 @@ void	ft_unset(t_shell *sh, char **argv)
 		return ;
 	while (argv[i])
 	{
-		del_env(sh, argv[i]);
+		del_env(env, argv[i]);
 		i++;
 	}
-	sh->last_status = 0;
+	shell_sig = 0;
 }

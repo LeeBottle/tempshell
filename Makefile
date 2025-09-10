@@ -16,7 +16,8 @@ SRCS = main.c\
 	parsing/token_to_cmd.c\
 	parsing/token_to_cmd_utils.c\
 	execute/execute.c\
-	builtin_func/builtin_std.c\
+	execute/handle_direct.c\
+	execute/handle_builtin.c\
 	builtin_func/builtin_echo.c\
 	builtin_func/builtin_cd.c\
 	builtin_func/builtin_pwd.c\
@@ -26,6 +27,7 @@ SRCS = main.c\
 	builtin_func/builtin_env.c\
 	builtin_func/builtin_exit.c\
 	external_func/execute_external.c\
+	external_func/path.c\
 	utils.c
 
 LIBFTDIR = ./libft

@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-static int opt(char *argv)
+static int	opt(char *argv)
 {
 	int	i;
 
@@ -16,13 +16,13 @@ static int opt(char *argv)
 	return (1);
 }
 
-void	ft_echo(t_shell *sh, char **argv)
+void	ft_echo(char **argv)
 {
 	int	newline;
-    int	i;
+	int	i;
 
 	newline = 1;
-    i = 1;
+	i = 1;
 	if (argv[i] && ft_strncmp(argv[i], "-", 1) == 0 && opt(argv[i]))
 	{
 		newline = 0;
@@ -37,5 +37,5 @@ void	ft_echo(t_shell *sh, char **argv)
 	}
 	if (newline == 1)
 		ft_putstr_fd("\n", 1);
-    sh->last_status = 0;
+	shell_sig = 0;
 }

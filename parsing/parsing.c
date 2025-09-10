@@ -16,7 +16,7 @@
     }
 }*/
 
-void	parsing(t_shell *sh, char *input)
+void	parsing(t_shell *sh, char *input, char **env)
 {
 	t_token *t;
     t_cmd	*cmds;
@@ -30,7 +30,7 @@ void	parsing(t_shell *sh, char *input)
 	if (pipe_end(sh, &t))
         return;
 	cmds = token_to_cmd(t); // 토큰 -> t_cmd 변환 + heredoc readline
-	execute(sh, cmds);
+	execute(env, cmds);
     free_tokens(t);
 }
 

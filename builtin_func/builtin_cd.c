@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void	ft_cd(t_shell *sh, char **argv)
+void	ft_cd(char **argv)
 {
 	int		i;
 	char	*path;
@@ -20,11 +20,11 @@ void	ft_cd(t_shell *sh, char **argv)
 	if (chdir(path) != 0)
 	{
 		ft_putstr_fd("minishell: cd: ", 2);
-        ft_putstr_fd(path, 2);
-        ft_putstr_fd(": ", 2);
-        ft_putstr_fd("No such file or directory\n", 2);
-        sh->last_status = 1;
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd("No such file or directory\n", 2);
+		shell_sig = 1;
 	}
 	else
-		sh->last_status = 0;
+		shell_sig = 0;
 }

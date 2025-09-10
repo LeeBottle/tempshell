@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-void	ft_pwd(t_shell *sh)
+void	ft_pwd()
 {
 	char	*temp;
 
@@ -8,11 +8,11 @@ void	ft_pwd(t_shell *sh)
 	if (temp == NULL)
 	{
 		perror("minishell: pwd");
-		sh->last_status = 1;
+		shell_sig = 1;
 		return ;
 	}
 	ft_putstr_fd(temp, 1);
-	ft_putstr_fd("\n", 1);
+	ft_putstr_fd("--\n", 1);
 	free(temp);
-	sh->last_status = 0;
+	shell_sig = 0;
 }

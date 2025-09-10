@@ -18,12 +18,12 @@ extern volatile sig_atomic_t shell_sig;
 // < > << >>
 typedef enum e_toktype {
 	TOK_WORD,
-    TOK_PIPE,
+	TOK_PIPE,
 	TOK_HEREDOC_WORD,
-    TOK_STDIN,
-    TOK_STDOUT,
-    TOK_HEREDOC,
-    TOK_APPEND,
+	TOK_STDIN,
+	TOK_STDOUT,
+	TOK_HEREDOC,
+	TOK_APPEND,
 }	t_toktype;
 
 typedef struct s_cmd {
@@ -31,25 +31,25 @@ typedef struct s_cmd {
 	char	*infile; // <
 	char	*outfile; // >
 	char	*append; // >>
-    t_list *heredoc; // << 내용물
+	t_list *heredoc; // << 내용물
 	struct s_cmd *next;
 }	t_cmd;
 
 typedef struct s_token {
-    char        *val;
-    t_toktype   type;
-    struct s_token *next;
+	char		*val;
+	t_toktype   type;
+	struct s_token *next;
 }   t_token;
 
 typedef struct s_shell {
-    int		last_status;
-    char	**envp;
+	int		last_status;
+	char	**envp;
 }   t_shell;
 
 int		main();
 void	sigint_handler(int sig);
 void	init_signal(void);
-void	parsing(t_shell *sh, char *input);
+void	parsing(t_shell *sh, char *input, char **env);
 t_token *split_value(t_shell *sh, char *line);
 void	split_pipe(char **line, t_token **head, t_token **tail);
 void	split_redir(char **line, t_token **head, t_token **tail);
@@ -57,28 +57,31 @@ void	split_word(t_shell *sh, char **line, t_token **head, t_token **tail);\
 void	process_character(t_shell *sh, char **line, char **acc);
 void	append_expanded_val(char **acc, char *expanded_val);
 char	*get_expanded_value(t_shell *sh, char **line);
-int     validate_syntax(t_shell *sh, t_token *t);
+int		validate_syntax(t_shell *sh, t_token *t);
 int		pipe_end(t_shell *sh, t_token **t_head);
-void    execute(t_shell *sh, t_cmd *cmd);
-int		ft_stdin(t_shell *sh, t_token *token, int stdin_bkp, int stdout_bkp);
-int		ft_stdout(t_shell *sh, t_token *token, int stdin_bkp, int stdout_bkp);
-int		ft_append(t_shell *sh, t_token *token, int stdin_bkp, int stdout_bkp);
-void	ft_echo(t_shell *sh, char **argv);
-void	ft_cd(t_shell *sh, char **argv);
-void	ft_pwd(t_shell *sh);
-void	ft_export(t_shell *sh, char **argv);
-void	export_list(t_shell *sh);
-void	ft_unset(t_shell *sh, char **argv);
-void	ft_env(t_shell *sh);
-void	ft_exit(t_shell *sh);
-void	execute_external(t_shell *sh, t_cmd *cmd);
+void	execute(char **env, t_cmd *cmd);
+
+void	is_direct(char **env, t_cmd *cmds);
+int		handle_redirections(t_cmd *cmd);
+int		is_builtin(t_cmd *cmd);
+int		func_builtin(char **env, t_cmd *cmd);
+
+void	ft_echo(char **argv);
+void	ft_cd(char **argv);
+void	ft_pwd();
+void	ft_export(char **env, char **argv);
+void	export_list(char **env);
+void	ft_unset(char **env, char **argv);
+void	ft_env(char **env);
+void	ft_exit();
+void	execute_external(char **env, t_cmd *cmd);
+char	*get_cmd_path(char *cmd, char **env);
 
 int		is_space(char c);
 int		is_quote(char c);
 int		is_meta(char c);
-void    ft_env(t_shell *sh);
-char    **copy_envp(char **envp);
-void    free_envp(char **envp);
+char	**copy_envp(char **envp);
+void	free_envp(char **envp);
 void	free_tokens(t_token *t);
 void	free_split(char **arr);
 t_cmd	*token_to_cmd(t_token *tokens);

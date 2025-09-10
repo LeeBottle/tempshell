@@ -1,7 +1,7 @@
 #include "../minishell.h"
 
-void	ft_exit(t_shell *sh)
+void	ft_exit()
 {
 	ft_putstr_fd("exit\n", 1);
-	exit(sh->last_status);
+	exit(shell_sig);
 }
