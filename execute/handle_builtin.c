@@ -1,8 +1,8 @@
 #include "../minishell.h"
 
-int func_builtin(t_shell *sh, t_cmd *cmd)
+int	func_builtin(t_shell *sh, t_cmd *cmd)
 {
-	char *command;
+	char	*command;
 
 	command = cmd->argv[0];
 	if (ft_strncmp(command, "echo", 5) == 0)
@@ -31,12 +31,12 @@ int	is_builtin(t_cmd *cmd)
 	if (cmd == NULL || cmd->argv == NULL || cmd->argv[0] == NULL)
 		return (0);
 	command = cmd->argv[0];
-	if (ft_strncmp(command, "echo", 5) == 0 ||
-		ft_strncmp(command, "cd", 3) == 0 ||
-		ft_strncmp(command, "pwd", 4) == 0 ||
-		ft_strncmp(command, "export", 7) == 0 ||
-		ft_strncmp(command, "unset", 6) == 0 ||
-		ft_strncmp(command, "env", 4) == 0 ||
+	if (ft_strncmp(command, "echo", 5) == 0 || \
+		ft_strncmp(command, "cd", 3) == 0 || \
+		ft_strncmp(command, "pwd", 4) == 0 || \
+		ft_strncmp(command, "export", 7) == 0 || \
+		ft_strncmp(command, "unset", 6) == 0 || \
+		ft_strncmp(command, "env", 4) == 0 || \
 		ft_strncmp(command, "exit", 5) == 0)
 		return (1);
 	return (0);

@@ -45,7 +45,6 @@ typedef struct s_token {
 }   t_token;
 
 typedef struct s_shell {
-    int		last_status;
     char	**envp;
 }   t_shell;
 
@@ -63,10 +62,17 @@ void	append_expanded_val(char **acc, char *expanded_val);
 char	*get_expanded_value(t_shell *sh, char **line);
 int		validate_syntax(t_shell *sh, t_token *t);
 int		pipe_end(t_shell *sh, t_token **t_head);
+
 void	execute(t_shell *sh, t_cmd *cmd);
+void	process_cmd(t_shell *sh, t_cmd *cmds, int *pv_pipe, pid_t *last_pid);
+void	wait_processes(t_shell *sh, pid_t last_pid);
 
 void	is_direct(t_shell *sh, t_cmd *cmds);
 int		handle_redirections(t_cmd *cmd);
+int		infile_fd(char *infile);
+int		heredoc_fd(int heredoc_fd);
+int		outfile_fd(char *outfile);
+int		append_fd(char *append);
 int		func_builtin(t_shell *sh, t_cmd *cmd);
 int		is_builtin(t_cmd *cmd);
 

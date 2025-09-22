@@ -7,7 +7,6 @@ int	main(int argc, char **argv, char **envp)
 	char	*input;
 	t_shell	sh;
     
-	sh.last_status = 0;
     sh.envp = copy_envp(envp);
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);

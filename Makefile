@@ -17,7 +17,10 @@ SRCS = main.c\
 	parsing/token_to_cmd.c\
 	parsing/token_to_cmd_utils.c\
 	execute/execute.c\
+	execute/cmd_routine.c\
 	execute/handle_direct.c\
+	execute/handle_direct_in.c\
+	execute/handle_direct_out.c\
 	execute/handle_builtin.c\
 	builtin_func/builtin_echo.c\
 	builtin_func/builtin_cd.c\
