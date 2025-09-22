@@ -6,7 +6,7 @@
 /*   By: sejo <sejo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 22:58:13 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/02 16:00:08 by sejo             ###   ########.fr       */
+/*   Updated: 2025/09/12 15:58:37 by sejo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ t_cmd	*start_new_cmd(t_cmd **head, t_cmd **tail)
 	cmd->infile = NULL;
 	cmd->outfile = NULL;
 	cmd->append = NULL;
-	cmd->heredoc = NULL;
+	cmd->heredoc_fd = -1;
+	cmd->in_type = -1;
+	cmd->out_type = -1;
+	cmd->heredoc_interrupted = 0;
 	cmd->next = NULL;
 	
 	if (!*head)
@@ -63,24 +66,29 @@ void	print_cmds(t_cmd *head)
 		printf("infile  = %s\n", cur->infile ? cur->infile : "(null)");
 		printf("outfile = %s\n", cur->outfile ? cur->outfile : "(null)");
 		printf("append  = %s\n", cur->append ? cur->append : "(null)");
-
-		// heredoc 출력
-		if (cur->heredoc)
+		printf("in_type  = %d\n", cur->in_type);
+		printf("out_type  = %d\n", cur->out_type);
+		if (cur->in_type == 1 && cur->heredoc_fd >= 0)
 		{
-			printf("heredoc = ");
-			h = cur->heredoc;
-			while (h)
-			{
-				printf("%s", (char *)h->content);
-				if (h->next)
-					printf(" | "); // 여러 줄이면 구분
-				h = h->next;
-			}
-			printf("\n");
+		    printf("heredoc_fd = %d\n", cur->heredoc_fd);
+		
+		    // 디버깅용: heredoc 내용 확인
+		    char buf[1024];
+		    int n;
+		
+		    lseek(cur->heredoc_fd, 0, SEEK_SET); // fd 처음으로
+		    n = read(cur->heredoc_fd, buf, sizeof(buf) - 1);
+		    if (n > 0)
+		    {
+		        buf[n] = '\0';
+		        printf("heredoc content = %s\n", buf);
+		    }
 		}
 		else
-			printf("heredoc = (null)\n");
-
+		{
+		    printf("heredoc = (null)\n");
+		}
+		
 		cur = cur->next;
 	}
 }

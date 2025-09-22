@@ -48,14 +48,14 @@ static void	print_list_stdout(char **envp_copy, int count)
 	}
 }
 
-void	export_list(char **env)
+void	export_list(t_shell *sh)
 {
 	char	**envp_copy;
 	int		i;
 	int		count;
 
 	count = 0;
-	while (env[count])
+	while (sh->envp[count])
 		count++;
 	envp_copy = malloc(sizeof(char *) * (count + 1));
 	if (!envp_copy)
@@ -63,12 +63,12 @@ void	export_list(char **env)
 	i = 0;
 	while (i < count)
 	{
-		envp_copy[i] = env[i];
+		envp_copy[i] = sh->envp[i];
 		i++;
 	}
 	envp_copy[i] = NULL;
 	sort_envp(envp_copy, count);
 	print_list_stdout(envp_copy, count);
 	free(envp_copy);
-	shell_sig = 0;
+	sh->last_status = 0;
 }

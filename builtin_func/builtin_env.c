@@ -53,14 +53,14 @@ void	free_envp(char **envp)
 	free(envp);
 }
 
-void	ft_env(char **env)
+void	ft_env(t_shell *sh)
 {
 	int	i;
 
 	i = 0;
-	while (env[i])
+	while (sh->envp[i])
 	{
-		ft_putendl_fd(env[i], 1);
+		ft_putendl_fd(sh->envp[i], 1);
 		i++;
 	}
 }

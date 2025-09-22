@@ -1,7 +1,8 @@
-NAME = 	minishell
+NAME = minishell
 CC = cc
 CFLAGS =
 LIBS = -lreadline
+
 SRCS = main.c\
 	signal/init_signal.c\
 	parsing/parsing.c\
@@ -23,6 +24,7 @@ SRCS = main.c\
 	builtin_func/builtin_pwd.c\
 	builtin_func/builtin_export.c\
 	builtin_func/builtin_export2.c\
+	builtin_func/builtin_export_util.c\
 	builtin_func/builtin_unset.c\
 	builtin_func/builtin_env.c\
 	builtin_func/builtin_exit.c\
@@ -33,7 +35,6 @@ SRCS = main.c\
 LIBFTDIR = ./libft
 LIBFTFILE = libft.a
 LIBFT = $(LIBFTDIR)/$(LIBFTFILE)
-
 
 OBJS = $(SRCS:.c=.o)
 

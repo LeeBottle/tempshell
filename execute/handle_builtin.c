@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int func_builtin(char **env, t_cmd *cmd)
+int func_builtin(t_shell *sh, t_cmd *cmd)
 {
 	char *command;
 
@@ -12,11 +12,11 @@ int func_builtin(char **env, t_cmd *cmd)
 	else if (ft_strncmp(command, "pwd", 4) == 0)
 		ft_pwd();
 	else if (ft_strncmp(command, "export", 7) == 0)
-		ft_export(env, cmd->argv);
+		ft_export(sh, cmd->argv);
 	else if (ft_strncmp(command, "unset", 6) == 0)
-		ft_unset(env, cmd->argv);
+		ft_unset(sh, cmd->argv);
 	else if (ft_strncmp(command, "env", 4) == 0)
-		ft_env(env);
+		ft_env(sh);
 	else if (ft_strncmp(command, "exit", 5) == 0)
 		ft_exit();
 	else
