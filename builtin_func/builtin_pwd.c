@@ -1,18 +1,19 @@
 #include "../minishell.h"
 
-void	ft_pwd(void)
+char	*ft_pwd(t_shell *sh, t_token *input)
 {
 	char	*temp;
+	char	*result;
 
 	temp = getcwd(NULL, 0);
 	if (temp == NULL)
 	{
 		perror("minishell: pwd");
-		shell_sig = 1;
-		return ;
+		sh->last_status = 1;
+		return (NULL);
 	}
-	ft_putstr_fd(temp, 1);
-	ft_putstr_fd("\n", 1);
+	result = ft_strjoin(temp, "\n");
 	free(temp);
-	shell_sig = 0;
+	sh->last_status = 0;
+	return (result);
 }

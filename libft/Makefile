@@ -34,8 +34,8 @@ SRCS = ft_isalpha.c\
     ft_putchar_fd.c\
     ft_putstr_fd.c\
     ft_putendl_fd.c\
-    ft_putnbr_fd.c\
-	ft_lstnew.c\
+    ft_putnbr_fd.c
+SRCS_B = ft_lstnew.c\
     ft_lstadd_front.c\
     ft_lstsize.c\
     ft_lstlast.c\
@@ -46,17 +46,27 @@ SRCS = ft_isalpha.c\
     ft_lstmap.c
 
 OBJS = $(SRCS:.c=.o) 
+OBJS_BONUS = $(SRCS_B:.c=.o)
+
+ifdef WITH_BONUS
+	OBJ_FILES = $(OBJS) $(OBJS_BONUS)
+else
+	OBJ_FILES = $(OBJS)
+endif
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	ar rcs $(NAME) $(OBJS)
+$(NAME): $(OBJ_FILES)
+	ar rcs $(NAME) $(OBJ_FILES)
+
+bonus :
+	make WITH_BONUS=1 all
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJS)
+	rm -rf $(OBJS) $(OBJS_BONUS)
 
 fclean: clean
 	rm -f $(NAME)
