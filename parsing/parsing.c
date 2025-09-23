@@ -16,22 +16,63 @@
     }
 }*/
 
-void	parsing(t_shell *sh, char *input)
+
+static void free_cmd_node(t_cmd *cmd)
+{
+    if (!cmd)
+        return;
+    if (cmd->argv)
+    {
+        int i = 0;
+        while (cmd->argv[i])
+        {
+            free(cmd->argv[i]);
+            i++;
+        }
+        free(cmd->argv);
+    }
+    free(cmd->infile);
+    free(cmd->outfile);
+    free(cmd->append);
+    if (cmd->heredoc_fd >= 0)
+        close(cmd->heredoc_fd);
+    free(cmd);
+}
+
+void free_cmds(t_cmd *head)
+{
+    t_cmd *current;
+    t_cmd *next;
+
+    current = head;
+    while (current)
+    {
+        next = current->next;
+        free_cmd_node(current);
+        current = next;
+    }
+}
+
+int	parsing(t_shell *sh, char *input)
 {
 	t_token *t;
     t_cmd	*cmds;
+	int		should_exit;
 	
 	t = split_value(sh, input);
-    if (validate_syntax(sh, t)) //파이프 뒤에 파이프가 올시 에러처리를 위한 조치
+    if (validate_syntax(sh, t))
     {
         free_tokens(t);
-        return;
+        return (0);
     }
 	if (pipe_end(sh, &t))
-        return;
-	cmds = token_to_cmd(t); // 토큰 -> t_cmd 변환 + heredoc readline
-	execute(sh, cmds);
+        return (0);
+	cmds = token_to_cmd(t);
+	if (cmds)
+		should_exit = execute(sh, cmds);
+	else
+		should_exit = 0;
     free_tokens(t);
+	free_cmds(cmds);
+	return (should_exit);
 }
-
-//<<추가

@@ -2,8 +2,6 @@
 
 static void	execute_command(t_shell *sh, t_cmd *cmd)
 {
-	if (handle_redirections(cmd) != 0)
-		exit(1);
 	if (cmd->argv[0] == NULL)
 		exit(0);
 	if (func_builtin(sh, cmd))
@@ -14,6 +12,10 @@ static void	execute_command(t_shell *sh, t_cmd *cmd)
 
 static void	child_process(t_shell *sh, t_cmd *cmd, int fd[2], int pv_pipe)
 {
+	if (cmd->in_type != -1)
+	{
+		handle_redirections(cmd);
+	}
 	if (pv_pipe != -1)
 	{
 		dup2(pv_pipe, STDIN_FILENO);
@@ -25,7 +27,12 @@ static void	child_process(t_shell *sh, t_cmd *cmd, int fd[2], int pv_pipe)
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
 	}
-	execute_command(sh, cmd);
+	if (cmd->argv[0] == NULL)
+		exit(0);
+	if (func_builtin(sh, cmd))
+		exit(shell_sig);
+	else
+		execute_external(sh, cmd);
 }
 
 static void	parent_process(int fd[2], int *pv_pipe, t_cmd *cmd)
@@ -36,6 +43,10 @@ static void	parent_process(int fd[2], int *pv_pipe, t_cmd *cmd)
 	{
 		close(fd[1]);
 		*pv_pipe = fd[0];
+	}
+	if (cmd->in_type == 1 && cmd->heredoc_fd >= 0)
+	{
+		close(cmd->heredoc_fd);
 	}
 }
 

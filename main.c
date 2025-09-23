@@ -8,7 +8,8 @@ int	main(int argc, char **argv, char **envp)
 	t_shell	sh;
     
     sh.envp = copy_envp(envp);
-	init_signal();
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		input = readline("minishell$ ");
@@ -20,10 +21,15 @@ int	main(int argc, char **argv, char **envp)
 		if (*input)
 		{
 			add_history(input);
-			parsing(&sh, input);
+			if (parsing(&sh, input))
+			{
+				free(input);
+				break;
+			}
 		}
 		free(input);
 	}
 	free_envp(sh.envp);
+	rl_clear_history();
 	return (shell_sig);
 }

@@ -52,7 +52,7 @@ typedef struct s_shell {
 int		main();
 void	sigint_handler(int sig);
 void	init_signal(void);
-void	parsing(t_shell *sh, char *input);
+int		parsing(t_shell *sh, char *input); //->int
 t_token *split_value(t_shell *sh, char *line);
 void	split_pipe(char **line, t_token **head, t_token **tail);
 void	split_redir(char **line, t_token **head, t_token **tail);
@@ -63,7 +63,7 @@ char	*get_expanded_value(t_shell *sh, char **line);
 int		validate_syntax(t_shell *sh, t_token *t);
 int		pipe_end(t_shell *sh, t_token **t_head);
 
-void	execute(t_shell *sh, t_cmd *cmd);
+int	execute(t_shell *sh, t_cmd *cmd); //->int
 void	process_cmd(t_shell *sh, t_cmd *cmds, int *pv_pipe, pid_t *last_pid);
 void	wait_processes(t_shell *sh, pid_t last_pid);
 
@@ -95,6 +95,7 @@ int		is_meta(char c);
 char	**copy_envp(char **envp);
 void	free_envp(char **envp);
 void	free_tokens(t_token *t);
+void    free_cmds(t_cmd *head);
 void	free_split(char **arr);
 t_cmd	*token_to_cmd(t_token *tokens);
 t_cmd	*start_new_cmd(t_cmd **head, t_cmd **tail);

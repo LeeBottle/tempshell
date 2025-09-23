@@ -6,20 +6,19 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:48:45 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/22 13:27:16 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/23 16:16:46 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#include "../libft/libft.h"
 
 void	append_argv(t_cmd *cmd, char *val)
 {
-	int	i;
+	int		i;
 	char	**new_argv;
 
-	i =0;
-	if(!cmd || !val)
+	i = 0;
+	if (!cmd || !val)
 		return ;
 	while (cmd->argv && cmd->argv[i])
 		i++;
@@ -29,79 +28,32 @@ void	append_argv(t_cmd *cmd, char *val)
 	i = 0;
 	while (cmd->argv && cmd->argv[i])
 	{
-		new_argv[i] = ft_strdup(cmd->argv[i]);
+		new_argv[i] = cmd->argv[i];
 		i++;
 	}
 	new_argv[i] = ft_strdup(val);
+	if (!new_argv[i])
+	{
+		i = 0;
+		while (cmd->argv && cmd->argv[i])
+			free(cmd->argv[i++]);
+		free(new_argv);
+		return ;
+	}
 	new_argv[i + 1] = NULL;
 	if (cmd->argv)
 		free(cmd->argv);
 	cmd->argv = new_argv;
 }
-int	handle_heredoc_input(char *limiter, int write_fd)
+
+void heredoc_child(char *limiter, int write_fd)
 {
     char *line;
 
-	signal(SIGINT, heredoc_sigint);
+    rl_catch_signals = 0;
+    signal(SIGINT, heredoc_sigint); // Ctrl+C 처리
     signal(SIGQUIT, SIG_IGN);
-	
-    while (1)
-    {
-		shell_sig = 0;
-        line = readline("> ");
-		if (shell_sig) // Ctrl+C
-		{
-			free(line);
-			return (-1);
-		}
-        if (!line) // Ctrl+D
-        {
-            printf("minishell: warning: here-document delimited by end-of-file (wanted `%s`)\n", limiter);
-            return (0);
-        }
-        if (ft_strncmp(line, limiter, ft_strlen(limiter) + 1) == 0)
-        {
-            free(line);
-            return (0);
-        }
-        write(write_fd, line, ft_strlen(line));
-		write(write_fd, "\n", 1);
-		free(line);
-    }
-	close(write_fd);
-	return (0);
-}
 
-void	handle_heredoc(t_cmd *cmd, char *limiter)
-{
-	int	pipefd[2];
-	int	res;
-
-	if (pipe(pipefd) == -1)
-	{
-		cmd->heredoc_interrupted = 1;
-		return ;
-	}
-	res = handle_heredoc_input(limiter, pipefd[1]);
-	close(pipefd[1]);
-    if (res == -1)
-	{
-		cmd->heredoc_fd = -1;
-		cmd->heredoc_interrupted = 1;
-		close(pipefd[0]);
-		return ;
-	}
-	cmd->heredoc_fd = pipefd[0];
-	cmd->heredoc_interrupted = 0;
-}
-/*static void heredoc_child(char *limiter, int write_fd)
-{
-    char *line;
-
-	signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_IGN);
-	rl_catch_signals = 1;
-	
     while (1)
     {
         line = readline("> ");
@@ -116,51 +68,86 @@ void	handle_heredoc(t_cmd *cmd, char *limiter)
             exit(0);
         }
         write(write_fd, line, ft_strlen(line));
-		write(write_fd, "\n", 1);
-		free(line);
+        write(write_fd, "\n", 1);
+        free(line);
     }
-	close(write_fd);
-	exit(0);
+    close(write_fd);
+    exit(0);
 }
 
 void handle_heredoc(t_cmd *cmd, char *limiter)
 {
-	int	pipefd[2];
-    pid_t pid;
-    int status;
+    int             pipefd[2];
+    pid_t           pid;
+    int             status;
+    struct termios  term_backup; // 터미널 설정을 저장할 '사진기' 변수
 
-	if (pipe(pipefd) == -1)
-		return ;
-    pid = fork();
+    /*
+     * [사진 찍기📸]
+     * 학생 조수(자식 프로세스)를 부르기 전에, 현재 깨끗한 교실 상태(터미널 설정)를
+     * term_backup 이라는 변수에 저장(사진 찍기)합니다.
+     * tcgetattr 함수가 바로 이 역할을 해요.
+     */
+    tcgetattr(STDIN_FILENO, &term_backup);
+
+    // 우리가 Ctrl+C를 눌렀을 때 메인 셸(선생님)이 영향받지 않도록 잠시 신호를 무시해요.
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    if (pipe(pipefd) == -1)
+        return;
+
+    pid = fork(); // 학생 조수(자식 프로세스)를 만듭니다.
     if (pid < 0)
-        return; // fork 실패
-    if (pid == 0)
-	{
-		close(pipefd[0]);
-        heredoc_child(limiter, pipefd[1]); // 자식에서 heredoc 수행
-		exit(0);
-	}
-	else
-	{
-		close(pipefd[1]);
-    	waitpid(pid, &status, 0);
-		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		{
-			close(pipefd[0]);
-		    cmd->heredoc_fd = -1;
-		    cmd->heredoc_interrupted = 1;
-			write(1, "\n", 1);
+        return;
+
+    if (pid == 0) // 여기는 학생 조수가 일하는 공간이에요.
+    {
+        close(pipefd[0]);
+        // 학생 조수는 Ctrl+C 비상벨이 울리면 heredoc_sigint 함수를 실행하도록 규칙을 정해요.
+        signal(SIGINT, heredoc_sigint);
+        heredoc_child(limiter, pipefd[1]);
+    }
+    else // 여기는 선생님이 학생 조수를 기다리는 공간이에요.
+    {
+        close(pipefd[1]);
+        waitpid(pid, &status, 0); // 학생 조수의 일이 끝날 때까지 기다립니다.
+
+        /*
+         * [사진 보고 정리하기✨]
+         * 학생 조수의 일이 어떻게 끝났든(잘 끝났든, 도망쳤든) 상관없이,
+         * 아까 찍어뒀던 사진(term_backup)을 보고 교실(터미널)을
+         * 원래의 깨끗한 상태로 되돌립니다.
+         * tcsetattr 함수가 이 역할을 담당해요.
+         */
+        tcsetattr(STDIN_FILENO, TCSANOW, &term_backup);
+
+        // 이제 선생님은 다시 Ctrl+C 신호를 받도록 원래대로 돌려놓습니다.
+        signal(SIGINT, sigint_handler);
+
+        // 만약 학생 조수가 Ctrl+C(종료 코드 130) 때문에 나갔다면,
+        if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+        {
+            // heredoc 작업이 중단되었다고 표시합니다.
+            shell_sig = 1;
+            cmd->heredoc_fd = -1;
+            cmd->heredoc_interrupted = 1;
 			return ;
-		}
-		if (cmd->infile)
-		{
-			free(cmd->infile);
-			cmd->infile = NULL;
-		}
-		cmd->heredoc_fd = pipefd[0];
-		cmd->heredoc_interrupted = 0;
-	}
-}*/
+        }
+        else // 정상적으로 끝났다면,
+        {
+            cmd->heredoc_fd = pipefd[0];
+            cmd->heredoc_interrupted = 0;
+        }
+
+        if (cmd->infile)
+        {
+            free(cmd->infile);
+            cmd->infile = NULL;
+        }
+    }
+	return ;
+}
+
 
 static void	handle_redir(t_cmd *cmd, t_token *tok)
 {
@@ -202,7 +189,7 @@ static int	pros_token(t_cmd **cmd, t_cmd **head, t_cmd **tail, t_token **cur)
 		handle_heredoc(*cmd, (*cur)->next->val);
 		if ((*cmd)->heredoc_interrupted)
 		{
-			*cur = (*cur)->next;
+			//*cur = (*cur)->next;
 			return (1);
 		}
 		(*cmd)->in_type = 1;
@@ -235,11 +222,12 @@ t_cmd	*token_to_cmd(t_token *tokens)
 	{
 		if(pros_token(&cmd, &head, &tail, &cur))
 		{
-			//clear head 나중에 메모리 작업할때하기
-			return (NULL);
+			free_cmds(head);
+			return (0);
 		}
 		cur = cur->next;
 	}
 	print_cmds(head);
 	return (head);
 }
+//추가
