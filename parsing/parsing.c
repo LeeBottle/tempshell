@@ -30,12 +30,7 @@ void	parsing(t_shell *sh, char *input)
 	if (pipe_end(sh, &t))
         return;
 	cmds = token_to_cmd(t); // 토큰 -> t_cmd 변환 + heredoc readline
-	if (!cmds)
-    {
-        //free_tokens(t);
-        return ;
-    }
-    execute(sh, t);
+	execute(sh, cmds);
     free_tokens(t);
 }
 

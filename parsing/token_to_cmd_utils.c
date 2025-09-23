@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_to_cmd_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejo <sejo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 22:58:13 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/12 15:58:37 by sejo             ###   ########.fr       */
+/*   Updated: 2025/09/22 13:29:17 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ void	print_cmds(t_cmd *head)
 		{
 		    printf("heredoc = (null)\n");
 		}
-		
 		cur = cur->next;
 	}
 }

@@ -29,7 +29,7 @@ static int  syntax_error(t_shell *sh, t_token *t)
     write(2, "zsh: parse error near `", 23);
     write(2, tok_lexeme(t), ft_strlen(tok_lexeme(t)));
     write(2, "'\n", 2);
-    sh->last_status = 258;
+    shell_sig = 258;
     return 1;
 }
 

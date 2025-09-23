@@ -26,3 +26,13 @@ void free_tokens(t_token *t)
         t = n;
     }
 }
+
+void	free_split(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+		free(arr[i++]);
+	free(arr);
+}

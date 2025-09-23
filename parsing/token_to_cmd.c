@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_to_cmd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejo <sejo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:48:45 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/23 13:56:51 by sejo             ###   ########.fr       */
+/*   Updated: 2025/09/22 13:27:16 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,70 @@ void	append_argv(t_cmd *cmd, char *val)
 		free(cmd->argv);
 	cmd->argv = new_argv;
 }
-
-void heredoc_child(char *limiter, int write_fd)
+int	handle_heredoc_input(char *limiter, int write_fd)
 {
     char *line;
 
-    rl_catch_signals = 0;
-    signal(SIGINT, heredoc_sigint); // Ctrl+C 처리
+	signal(SIGINT, heredoc_sigint);
     signal(SIGQUIT, SIG_IGN);
+	
+    while (1)
+    {
+		shell_sig = 0;
+        line = readline("> ");
+		if (shell_sig) // Ctrl+C
+		{
+			free(line);
+			return (-1);
+		}
+        if (!line) // Ctrl+D
+        {
+            printf("minishell: warning: here-document delimited by end-of-file (wanted `%s`)\n", limiter);
+            return (0);
+        }
+        if (ft_strncmp(line, limiter, ft_strlen(limiter) + 1) == 0)
+        {
+            free(line);
+            return (0);
+        }
+        write(write_fd, line, ft_strlen(line));
+		write(write_fd, "\n", 1);
+		free(line);
+    }
+	close(write_fd);
+	return (0);
+}
 
+void	handle_heredoc(t_cmd *cmd, char *limiter)
+{
+	int	pipefd[2];
+	int	res;
+
+	if (pipe(pipefd) == -1)
+	{
+		cmd->heredoc_interrupted = 1;
+		return ;
+	}
+	res = handle_heredoc_input(limiter, pipefd[1]);
+	close(pipefd[1]);
+    if (res == -1)
+	{
+		cmd->heredoc_fd = -1;
+		cmd->heredoc_interrupted = 1;
+		close(pipefd[0]);
+		return ;
+	}
+	cmd->heredoc_fd = pipefd[0];
+	cmd->heredoc_interrupted = 0;
+}
+/*static void heredoc_child(char *limiter, int write_fd)
+{
+    char *line;
+
+	signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_IGN);
+	rl_catch_signals = 1;
+	
     while (1)
     {
         line = readline("> ");
@@ -61,63 +116,51 @@ void heredoc_child(char *limiter, int write_fd)
             exit(0);
         }
         write(write_fd, line, ft_strlen(line));
-        write(write_fd, "\n", 1);
-        free(line);
+		write(write_fd, "\n", 1);
+		free(line);
     }
-    close(write_fd);
-    exit(0);
+	close(write_fd);
+	exit(0);
 }
 
 void handle_heredoc(t_cmd *cmd, char *limiter)
 {
-    int pipefd[2];
+	int	pipefd[2];
     pid_t pid;
     int status;
 
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-    if (pipe(pipefd) == -1)
-        return;
-
+	if (pipe(pipefd) == -1)
+		return ;
     pid = fork();
     if (pid < 0)
-        return;
-
+        return; // fork 실패
     if (pid == 0)
-    {
-        close(pipefd[0]);
-        heredoc_child(limiter, pipefd[1]);
-    }
-    else
-    {
-        close(pipefd[1]);
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
-        {
-            // Ctrl+C 발생 시 처리
-            //close(pipefd[0]);
-			shell_sig = 1;
-            cmd->heredoc_fd = -1;
-            cmd->heredoc_interrupted = 1;
+	{
+		close(pipefd[0]);
+        heredoc_child(limiter, pipefd[1]); // 자식에서 heredoc 수행
+		exit(0);
+	}
+	else
+	{
+		close(pipefd[1]);
+    	waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		{
+			close(pipefd[0]);
+		    cmd->heredoc_fd = -1;
+		    cmd->heredoc_interrupted = 1;
+			write(1, "\n", 1);
 			return ;
-        }
-        else
-        {
-            cmd->heredoc_fd = pipefd[0];
-            cmd->heredoc_interrupted = 0;
-        }
-
-        if (cmd->infile)
-        {
-            free(cmd->infile);
-            cmd->infile = NULL;
-        }
-		    // rl_catch_signals = 1;
-			// signal(SIGINT, token_handler);
-			// signal(SIGQUIT, SIG_IGN);
-    }
-	return ;
-}
+		}
+		if (cmd->infile)
+		{
+			free(cmd->infile);
+			cmd->infile = NULL;
+		}
+		cmd->heredoc_fd = pipefd[0];
+		cmd->heredoc_interrupted = 0;
+	}
+}*/
 
 static void	handle_redir(t_cmd *cmd, t_token *tok)
 {
@@ -192,11 +235,11 @@ t_cmd	*token_to_cmd(t_token *tokens)
 	{
 		if(pros_token(&cmd, &head, &tail, &cur))
 		{
-			return (0);
+			//clear head 나중에 메모리 작업할때하기
+			return (NULL);
 		}
 		cur = cur->next;
 	}
 	print_cmds(head);
 	return (head);
 }
-//추가

@@ -45,7 +45,7 @@ static char *question(t_shell *sh, char **line)
     if (**line == '?')
     {
         (*line)++;
-        return ft_itoa(sh->last_status);
+        return ft_itoa(shell_sig);
     }
     else if (!ft_isalpha(**line) && **line != '_')
     {

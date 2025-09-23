@@ -1,19 +1,5 @@
 #include "../minishell.h"
 
-static int	is_valid_identifier(const char *key)
-{
-	if (!key || key[0] == '\0' || (!ft_isalpha(key[0]) && key[0] != '_'))
-		return (0);
-	key++;
-	while (*key)
-	{
-		if (!ft_isalnum(*key) && *key != '_')
-			return (0);
-		key++;
-	}
-	return (1);
-}
-
 static int	update_existing_env(t_shell *sh, char *key, char *value)
 {
 	int		i;
@@ -21,11 +7,12 @@ static int	update_existing_env(t_shell *sh, char *key, char *value)
 	char	*new_var;
 	char	*temp;
 
-	i = -1;
+	i = 0;
 	key_len = ft_strlen(key);
-	while (sh->envp[++i])
+	while (sh->envp[i])
 	{
-		if (ft_strncmp(sh->envp[i], key, key_len) == 0 && sh->envp[i][key_len] == '=')
+		if (ft_strncmp(sh->envp[i], key, key_len) == 0 && \
+			sh->envp[i][key_len] == '=')
 		{
 			free(sh->envp[i]);
 			temp = ft_strjoin(key, "=");
@@ -34,6 +21,7 @@ static int	update_existing_env(t_shell *sh, char *key, char *value)
 			sh->envp[i] = new_var;
 			return (1);
 		}
+		i++;
 	}
 	return (0);
 }
@@ -49,10 +37,14 @@ static void	add_new_env(t_shell *sh, char *key, char *value)
 	while (sh->envp[count])
 		count++;
 	new_envp = malloc(sizeof(char *) * (count + 2));
-	if (!new_envp) return;
-	count = -1;
-	while (sh->envp[++count])
+	if (!new_envp)
+		return ;
+	count = 0;
+	while (sh->envp[count])
+	{
 		new_envp[count] = sh->envp[count];
+		count++;
+	}
 	temp = ft_strjoin(key, "=");
 	new_var = ft_strjoin(temp, value);
 	free(temp);
@@ -62,63 +54,63 @@ static void	add_new_env(t_shell *sh, char *key, char *value)
 	sh->envp = new_envp;
 }
 
-static char *export_list(t_shell *sh, t_token *input)
+static void	export_val(t_shell *sh, char **argv, int i, int j)
 {
-	char	*temp;
-    char    *result;
-	int		i;
-
-	result = ft_strdup("");
-	i = 0;
-	while (sh->envp[i])
-	{
-		temp = ft_strjoin(result, sh->envp[i]);
-		free(result);
-		result = temp;
-		temp = ft_strjoin(result, "\n");
-		free(result);
-		result = temp;
-		i++;
-	}
-	sh->last_status = 0;
-	return (result);
-}
-
-char	*ft_export(t_shell *sh, t_token *input)
-{
-	int		i;
-	char	*temp;
 	char	*key;
 	char	*value;
 
-	input = input->next;
-	if (input == NULL || input->type != TOK_WORD)
-		return(export_list(sh, input));
-	while (input != NULL)
+	key = ft_substr(argv[i], 0, j);
+	if (!key_chekcer(key))
 	{
-		i = 0;
-		while (input->val[i] != '\0')
-		{
-			if (input->val[i] == '=')
-				break;
-			i++;
-		}
-		if (i == 0)
-		{
-			ft_putstr_fd("minishell: export: `",2);
-			ft_putstr_fd(input->val, 2);
-			ft_putstr_fd("': not a valid identifier\n",2);
-		}
-		key = ft_substr(input->val, 0, i);
-		value = ft_substr(input->val, i + 1, ft_strlen(input->val) - i - 1);
-		if (is_valid_identifier(key))
-		{
-			if (!update_existing_env(sh, key, value))
-				add_new_env(sh, key, value);
-		}
+		export_error(argv[i]);
 		free(key);
-		free(value);
-		input = input->next;
+		return ;
 	}
-	return (0);
+	value = ft_substr(argv[i], j + 1, ft_strlen(argv[i]) - j - 1);
+	if (!update_existing_env(sh, key, value))
+		add_new_env(sh, key, value);
+	free(key);
+	free(value);
+	shell_sig = 0;
+}
+
+static int  find_equal(char *argv)
+{
+    int i;
+
+    i = 0;
+    while (argv[i])
+    {
+        if (argv[i] == '=')
+            return (i);
+        i++;
+    }
+    return (-1);
+}
+
+void	ft_export(t_shell *sh, char **argv)
+{
+	int		i;
+	int		j;
+
+	if (argv[1] == NULL)
+	{
+		export_list(sh);
+		return ;
+	}
+	i = 1;
+	while (argv[i])
+	{
+		j = find_equal(argv[i]);
+		if (j == -1)
+			export_error(argv[i]);
+		else if (argv[i][j] == '=')
+			export_val(sh, argv, i, j);
+		else
+		{
+			if (!key_chekcer(argv[i]))
+				export_error(argv[i]);
+		}
+		i++;
+	}
 }

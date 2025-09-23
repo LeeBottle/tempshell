@@ -7,17 +7,10 @@ int	main(int argc, char **argv, char **envp)
 	char	*input;
 	t_shell	sh;
     
-	sh.last_status = 0;
     sh.envp = copy_envp(envp);
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
-	shell_sig = 0;
+	init_signal();
 	while (1)
 	{
-		if (shell_sig)
-        {
-            shell_sig = 0;
-        }
 		input = readline("minishell$ ");
 		if (!input)
         {

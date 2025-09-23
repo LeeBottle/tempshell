@@ -1,54 +1,41 @@
 #include "../minishell.h"
 
-static void opt(t_token **input, int *newline)
+static int	opt(char *argv)
 {
-	char *opt;
+	int	i;
 
-	opt = (*input)->val;
-	opt++;
-	while (*opt != '\0')
+	i = 1;
+	if (argv[0] != '-' || argv[1] == '\0')
+		return (0);
+	while (argv[i])
 	{
-		if (*opt != 'n')
-			return ;
-		opt++;
+		if (argv[i] != 'n')
+			return (0);
+		i++;
 	}
-	printf("----\n");
-	*newline = 0;
-	(*input) = (*input)->next;
+	return (1);
 }
 
-char	*ft_echo(t_shell *sh, t_token *input)
+void	ft_echo(char **argv)
 {
-	int		newline;
-    char    *result;
-    char    *temp;
+	int	newline;
+	int	i;
 
 	newline = 1;
-    result = ft_strdup("");
-	input = input->next;
-	if (input && ft_strncmp(input->val, "-", 1) == 0)
-		opt(&input, &newline);
-	while (input && input->type == TOK_WORD)
+	i = 1;
+	while (argv[i] && ft_strncmp(argv[i], "-", 1) == 0 && opt(argv[i]))
 	{
-		temp = ft_strjoin(result, input->val);
-		free(result);
-        result = temp;
-        input = input->next;
-		if (input && input->type == TOK_WORD)
-        {
-            temp = ft_strjoin(result, " ");
-            free(result);
-            result = temp;
-        }
+		newline = 0;
+		i++;
+	}
+	while (argv[i])
+	{
+		ft_putstr_fd(argv[i], 1);
+		i++;
+		if (argv[i])
+			ft_putstr_fd(" ", 1);
 	}
 	if (newline == 1)
-	{
-        temp = ft_strjoin(result, "\n");
-        free(result);
-        result = temp;
-    }
-    sh->last_status = 0;
-    return (result);
+		ft_putstr_fd("\n", 1);
+	shell_sig = 0;
 }
-
-

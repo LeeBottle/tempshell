@@ -1,7 +1,8 @@
-NAME = 	minishell
+NAME = minishell
 CC = cc
 CFLAGS =
 LIBS = -lreadline
+
 SRCS = main.c\
 	signal/init_signal.c\
 	parsing/parsing.c\
@@ -16,19 +17,27 @@ SRCS = main.c\
 	parsing/token_to_cmd.c\
 	parsing/token_to_cmd_utils.c\
 	execute/execute.c\
+	execute/cmd_routine.c\
+	execute/handle_direct.c\
+	execute/handle_direct_in.c\
+	execute/handle_direct_out.c\
+	execute/handle_builtin.c\
 	builtin_func/builtin_echo.c\
 	builtin_func/builtin_cd.c\
 	builtin_func/builtin_pwd.c\
 	builtin_func/builtin_export.c\
+	builtin_func/builtin_export2.c\
+	builtin_func/builtin_export_util.c\
 	builtin_func/builtin_unset.c\
 	builtin_func/builtin_env.c\
 	builtin_func/builtin_exit.c\
+	external_func/execute_external.c\
+	external_func/path.c\
 	utils.c
 
 LIBFTDIR = ./libft
 LIBFTFILE = libft.a
 LIBFT = $(LIBFTDIR)/$(LIBFTFILE)
-
 
 OBJS = $(SRCS:.c=.o)
 
