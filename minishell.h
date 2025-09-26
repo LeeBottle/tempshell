@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:24:19 by byeolee           #+#    #+#             */
-/*   Updated: 2025/09/26 17:39:51 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/26 19:17:23 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,18 @@ typedef struct s_token_list {
 
 typedef struct s_shell {
 	char	**envp;
+	struct s_token	*tokens;
+	struct s_cmd	*cmds; 
 }	t_shell;
+
+typedef struct s_child_info
+{
+	t_shell	*sh;
+	t_cmd	*cmds_head;
+	t_cmd	*current_cmd;
+	int		*fd;
+	int		pv_pipe;
+}	t_child_info;
 
 int		main(int argc, char **argv, char **envp);
 void	sigint_handler(int sig);
@@ -97,7 +108,6 @@ t_cmd	*start_new_cmd(t_cmd **head, t_cmd **tail);
 void	handle_heredoc(t_cmd *cmd, char *limiter);
 void	append_argv(t_cmd *cmd, char *val);
 void	heredoc_child(char *limiter, int write_fd);
-void	handle_heredoc(t_cmd *cmd, char *limiter);
 void	handle_unclosed_quote(char **acc);
 
 //execute

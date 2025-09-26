@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 16:05:48 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/26 17:16:46 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/26 18:45:11 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,13 @@ static int	syntax_error(t_token *t)
 	return (1);
 }
 
+static int	pipe_start_error(void)
+{
+	write(2, "minishell: syntax error near unexpected token '|'\n", 55);
+	g_shell_sig = 2;
+	return (1);
+}
+
 int	validate_syntax(t_token *t)
 {
 	t_token	*cur;
@@ -52,6 +59,8 @@ int	validate_syntax(t_token *t)
 	cur = t;
 	if (!cur)
 		return (0);
+	if (cur->type == TOK_PIPE)
+		return (pipe_start_error());
 	while (cur)
 	{
 		if (cur->type == TOK_PIPE)

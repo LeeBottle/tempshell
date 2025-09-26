@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_word_append_utils.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejo <sejo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 13:55:24 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/26 15:50:22 by sejo             ###   ########.fr       */
+/*   Updated: 2025/09/26 18:55:18 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,11 @@ void	env_append(char **acc, t_token_list *list, char **parts)
 		*acc = NULL;
 	}
 	else
+	{
+		if (*acc)
+			free(*acc);
 		*acc = ft_strdup(parts[0]);
+	}
 	i = 1;
 	while (parts[i])
 	{

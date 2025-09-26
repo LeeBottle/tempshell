@@ -1,13 +1,26 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   routine_cmd.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/26 17:28:10 by byeolee           #+#    #+#             */
-/*   Updated: 2025/09/26 17:28:10 by byeolee          ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   routine_cmd.c									  :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr	+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2025/09/26 17:28:10 by byeolee		   #+#	#+#			 */
+/*   Updated: 2025/09/26 18:36:35 by byeolee		  ###   ########.fr	   */
+/*																			*/
+/* ************************************************************************** */
+
+#include "../minishell.h"
+/* ************************************************************************** */
+/* */
+/* :::      ::::::::   */
+/* routine_cmd.c                                      :+:      :+:    :+:   */
+/* +:+ +:+         +:+     */
+/* By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/* +#+#+#+#+#+   +#+           */
+/* Created: 2025/09/26 17:28:10 by byeolee           #+#    #+#             */
+/* Updated: 2025/09/26 17:28:10 by byeolee          ###   ########.fr       */
+/* */
 /* ************************************************************************** */
 
 #include "../minishell.h"
@@ -50,9 +63,7 @@ static void	parent_process(int fd[2], int *pv_pipe, t_cmd *cmd)
 		*pv_pipe = fd[0];
 	}
 	if (cmd->in_type == 1 && cmd->heredoc_fd >= 0)
-	{
 		close(cmd->heredoc_fd);
-	}
 }
 
 void	process_cmd(t_shell *sh, t_cmd *cmds, int *pv_pipe, pid_t *last_pid)
