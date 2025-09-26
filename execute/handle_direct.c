@@ -42,3 +42,59 @@ void	is_direct(t_shell *sh, t_cmd *cmds)
 	close(stdout_backup);
 	return ;
 }
+
+static int	output_check(t_cmd *current)
+{
+	int	fd;
+
+	if (current->outfile)
+	{
+		fd = open(current->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd == -1)
+		{
+			perror(current->outfile);
+			return (1);
+		}
+		close(fd);
+	}
+	return (0);
+}
+
+static int	append_check(t_cmd *current)
+{
+	int	fd;
+
+	if (current->append)
+	{
+		fd = open(current->append, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fd == -1)
+		{
+			perror(current->append);
+			return (1);
+		}
+		close(fd);
+	}
+	return (0);
+}
+
+int	outfile_checker(t_cmd *cmds)
+{
+	t_cmd	*current;
+
+	current = cmds;
+	while (current)
+	{
+		if (current->out_type == 0)
+		{
+			if (output_check(current))
+				return (1);
+		}
+		else if (current->out_type == 1)
+		{
+			if (append_check(current))
+				return (1);
+		}
+		current = current->next;
+	}
+	return (0);
+}

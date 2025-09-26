@@ -17,7 +17,8 @@ SRCS = main.c\
 	parsing/token_to_cmd.c\
 	parsing/token_to_cmd_utils.c\
 	execute/execute.c\
-	execute/cmd_routine.c\
+	execute/routine_cmd.c\
+	execute/routine_wait.c\
 	execute/handle_direct.c\
 	execute/handle_direct_in.c\
 	execute/handle_direct_out.c\
@@ -27,6 +28,7 @@ SRCS = main.c\
 	builtin_func/builtin_pwd.c\
 	builtin_func/builtin_export.c\
 	builtin_func/builtin_export2.c\
+	builtin_func/builtin_export3.c\
 	builtin_func/builtin_export_util.c\
 	builtin_func/builtin_unset.c\
 	builtin_func/builtin_env.c\

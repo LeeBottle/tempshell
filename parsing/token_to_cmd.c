@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:48:45 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/23 16:16:46 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/23 17:25:06 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ t_cmd	*token_to_cmd(t_token *tokens)
 		}
 		cur = cur->next;
 	}
-	print_cmds(head);
+	//print_cmds(head);
 	return (head);
 }
 //추가

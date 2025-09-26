@@ -1,43 +1,43 @@
 #include "../minishell.h"
 
-	static char	**input_envp(int i, int count, char **envp)
-	{
-		char	**new_envp;
+static char	**input_envp(int i, int count, char **envp)
+{
+	char	**new_envp;
 
-		new_envp = malloc(sizeof(char *) * (count + 1));
-		if (!new_envp)
-			return (NULL);
-		while (i < count)
+	new_envp = malloc(sizeof(char *) * (count + 1));
+	if (!new_envp)
+		return (NULL);
+	while (i < count)
+	{
+		new_envp[i] = ft_strdup(envp[i]);
+		if (!new_envp[i])
 		{
-			new_envp[i] = ft_strdup(envp[i]);
-			if (!new_envp[i])
-			{
-				while (i > 0)
-					free(new_envp[--i]);
-				free(new_envp);
-				return (NULL);
-			}
-			i++;
-		}
-		new_envp[count] = NULL;
-		return (new_envp);
-	}
-
-	char	**copy_envp(char **envp)
-	{
-		char	**new_envp;
-		int		i;
-		int		count;
-
-		if (!envp)
+			while (i > 0)
+				free(new_envp[--i]);
+			free(new_envp);
 			return (NULL);
-		count = 0;
-		while (envp[count])
-			count++;
-		i = 0;
-		new_envp = input_envp(i, count, envp);
-		return (new_envp);
+		}
+		i++;
 	}
+	new_envp[count] = NULL;
+	return (new_envp);
+}
+
+char	**copy_envp(char **envp)
+{
+	char	**new_envp;
+	int		i;
+	int		count;
+
+	if (!envp)
+		return (NULL);
+	count = 0;
+	while (envp[count])
+		count++;
+	i = 0;
+	new_envp = input_envp(i, count, envp);
+	return (new_envp);
+}
 
 void	free_envp(char **envp)
 {

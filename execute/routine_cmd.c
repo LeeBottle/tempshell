@@ -12,11 +12,14 @@ static void	execute_command(t_shell *sh, t_cmd *cmd)
 
 static void	child_process(t_shell *sh, t_cmd *cmd, int fd[2], int pv_pipe)
 {
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	if (cmd->in_type != -1)
 	{
-		handle_redirections(cmd);
+		if (handle_redirections(cmd))
+			exit(1);
 	}
-	if (pv_pipe != -1)
+	else if (pv_pipe != -1)
 	{
 		dup2(pv_pipe, STDIN_FILENO);
 		close(pv_pipe);
@@ -75,23 +78,5 @@ void	process_cmd(t_shell *sh, t_cmd *cmds, int *pv_pipe, pid_t *last_pid)
 		parent_process(fd, pv_pipe, current_cmd);
 		*last_pid = pid;
 		current_cmd = current_cmd->next;
-	}
-}
-
-void	wait_processes(t_shell *sh, pid_t last_pid)
-{
-	int		status;
-	pid_t	waited_pid;
-
-	while (1)
-	{
-		waited_pid = wait(&status);
-		if (waited_pid > 0)
-		{
-			if (waited_pid == last_pid && WIFEXITED(status))
-				shell_sig = WEXITSTATUS(status);
-		}
-		else
-			break ;
 	}
 }

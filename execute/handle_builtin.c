@@ -18,7 +18,7 @@ int	func_builtin(t_shell *sh, t_cmd *cmd)
 	else if (ft_strncmp(command, "env", 4) == 0)
 		ft_env(sh, cmd->argv);
 	else if (ft_strncmp(command, "exit", 5) == 0)
-		ft_exit(cmd->argv);
+		shell_sig = 127;
 	else
 		return (0);
 	return (1);

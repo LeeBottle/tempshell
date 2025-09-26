@@ -1,14 +1,15 @@
 #include "../minishell.h"
 
-void	ft_exit(char **argv)
+int	ft_exit(t_cmd *cmds)
 {
-	int	i;
-
-	i = 0;
-	while (argv[i])
-		i++;
 	ft_putstr_fd("exit\n", 1);
-	if (i > 1)
-		ft_putstr_fd("bash: exit: too many arguments\n", 1);
-	exit(shell_sig);
+	if (cmds->argv[1])
+	{
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+		shell_sig = 1;
+		return (0);
+	}
+	if (cmds->argv[1])
+		shell_sig = ft_atoi(cmds->argv[1]);
+	return (1);
 }

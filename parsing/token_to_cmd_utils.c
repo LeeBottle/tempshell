@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_to_cmd_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejo <sejo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 22:58:13 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/12 15:58:37 by sejo             ###   ########.fr       */
+/*   Updated: 2025/09/23 17:20:59 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ void	print_cmds(t_cmd *head)
 		printf("append  = %s\n", cur->append ? cur->append : "(null)");
 		printf("in_type  = %d\n", cur->in_type);
 		printf("out_type  = %d\n", cur->out_type);
-		if (cur->in_type == 1 && cur->heredoc_fd >= 0)
+		printf("heredoc_fd = %d\n", cur->heredoc_fd);
+		/*if (cur->in_type == 1 && cur->heredoc_fd >= 0)
 		{
-		    printf("heredoc_fd = %d\n", cur->heredoc_fd);
 		
 		    // 디버깅용: heredoc 내용 확인
 		    char buf[1024];
@@ -88,7 +88,7 @@ void	print_cmds(t_cmd *head)
 		{
 		    printf("heredoc = (null)\n");
 		}
-		
+		*/
 		cur = cur->next;
 	}
 }
