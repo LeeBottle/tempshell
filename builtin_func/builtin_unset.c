@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_unset.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:27:43 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:27:43 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-static void	add_new_env(t_shell *sh, char *result)
+static void	new_env(t_shell *sh, char *result)
 {
 	free_envp(sh->envp);
 	sh->envp = ft_split(result, '\n');
@@ -41,7 +53,7 @@ static void	del_env(t_shell *sh, char *key)
 		}
 		i++;
 	}
-	add_new_env(sh, result);
+	new_env(sh, result);
 	free(result);
 }
 
@@ -57,5 +69,5 @@ void	ft_unset(t_shell *sh, char **argv)
 		del_env(sh, argv[i]);
 		i++;
 	}
-	shell_sig = 0;
+	g_shell_sig = 0;
 }

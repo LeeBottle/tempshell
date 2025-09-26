@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_env.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:27:32 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:27:33 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 static char	**input_envp(int i, int count, char **envp)
@@ -67,7 +79,7 @@ void	ft_env(t_shell *sh, char **argv)
 		ft_putstr_fd("env: ‘", 1);
 		ft_putstr_fd(argv[1], 1);
 		ft_putstr_fd("’: No such file or directory\n", 1);
-		shell_sig = 127;
+		g_shell_sig = 127;
 		return ;
 	}
 	i = 0;

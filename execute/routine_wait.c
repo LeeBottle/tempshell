@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   routine_wait.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:28:07 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:28:08 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 static void	handle_signal_status(int status, int *first_signal, int is_pipeline)
@@ -5,19 +17,19 @@ static void	handle_signal_status(int status, int *first_signal, int is_pipeline)
 	if (WTERMSIG(status) == SIGINT)
 	{
 		if (is_pipeline)
-			shell_sig = 0;
+			g_shell_sig = 0;
 		else
-			shell_sig = 130;
+			g_shell_sig = 130;
 		if (*first_signal)
 			ft_putstr_fd("\n", 2);
 	}
 	else if (WTERMSIG(status) == SIGQUIT)
 	{
 		if (is_pipeline)
-			shell_sig = 0;
+			g_shell_sig = 0;
 		else
 		{
-			shell_sig = 131;
+			g_shell_sig = 131;
 			if (*first_signal)
 				ft_putstr_fd("Quit (core dumped)\n", 2);
 		}
@@ -28,10 +40,10 @@ static void	handle_signal_status(int status, int *first_signal, int is_pipeline)
 static void	handle_exit_status(pid_t waited_pid, pid_t last_pid, int status)
 {
 	if (waited_pid == last_pid && WIFEXITED(status))
-		shell_sig = WEXITSTATUS(status);
+		g_shell_sig = WEXITSTATUS(status);
 }
 
-void	wait_processes(t_shell *sh, pid_t last_pid, int is_pipeline)
+void	wait_processes(pid_t last_pid, int is_pipeline)
 {
 	int		status;
 	pid_t	waited_pid;

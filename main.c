@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:26:56 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:26:57 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-volatile sig_atomic_t	shell_sig;
+volatile sig_atomic_t	g_shell_sig;
 
 static void	pre_processing(t_shell *sh, char **envp)
 {
 	sh->envp = copy_envp(envp);
-	shell_sig = 0;
+	g_shell_sig = 0;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
@@ -46,5 +58,5 @@ int	main(int argc, char **argv, char **envp)
 	main_loop(&sh);
 	free_envp(sh.envp);
 	rl_clear_history();
-	return (shell_sig);
+	return (g_shell_sig);
 }

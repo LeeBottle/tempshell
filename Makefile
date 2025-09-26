@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS =
+CFLAGS = -Wall -Wextra -Werror
 LIBS = -lreadline
 
 SRCS = main.c\
@@ -12,6 +12,7 @@ SRCS = main.c\
 	parsing/split_word.c\
 	parsing/split_word_append.c\
 	parsing/split_word_append2.c\
+	parsing/split_word_append_utils.c\
 	parsing/validate_syntax.c\
 	parsing/pipe_end.c\
 	parsing/token_to_cmd.c\

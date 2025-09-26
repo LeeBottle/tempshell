@@ -6,20 +6,70 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 22:58:13 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/23 17:20:59 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/26 17:16:46 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include <stdio.h>
 
+void	heredoc_parent_close(pid_t pid, int status, \
+	struct termios term_backup, t_cmd *cmd)
+{
+	waitpid(pid, &status, 0);
+	tcsetattr(STDIN_FILENO, TCSANOW, &term_backup);
+	signal(SIGINT, sigint_handler);
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+	{
+		g_shell_sig = 1;
+		cmd->heredoc_fd = -1;
+		cmd->heredoc_interrupted = 1;
+		return ;
+	}
+	else
+		cmd->heredoc_interrupted = 0;
+	if (cmd->infile)
+	{
+		free(cmd->infile);
+		cmd->infile = NULL;
+	}
+}
+
+void	heredoc_child(char *limiter, int write_fd)
+{
+	char	*line;
+
+	rl_catch_signals = 0;
+	signal(SIGINT, heredoc_sigint);
+	signal(SIGQUIT, SIG_IGN);
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+		{
+			printf("minishell: warning: here-document \
+delimited by end-of-file (wanted `%s`)\n", limiter);
+			exit(0);
+		}
+		if (ft_strncmp(line, limiter, ft_strlen(limiter) + 1) == 0)
+		{
+			free(line);
+			exit(0);
+		}
+		write(write_fd, line, ft_strlen(line));
+		write(write_fd, "\n", 1);
+		free(line);
+	}
+	exit(0);
+}
+
 t_cmd	*start_new_cmd(t_cmd **head, t_cmd **tail)
 {
-	t_cmd *cmd;
-	
+	t_cmd	*cmd;
+
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
-		return NULL;
+		return (NULL);
 	cmd->argv = NULL;
 	cmd->infile = NULL;
 	cmd->outfile = NULL;
@@ -29,66 +79,10 @@ t_cmd	*start_new_cmd(t_cmd **head, t_cmd **tail)
 	cmd->out_type = -1;
 	cmd->heredoc_interrupted = 0;
 	cmd->next = NULL;
-	
 	if (!*head)
 		*head = cmd;
 	else
 		(*tail)->next = cmd;
 	*tail = cmd;
-	return (cmd);	
-}
-
-void	print_cmds(t_cmd *head)
-{
-	int i;
-	t_cmd *cur;
-	t_list *h;
-
-	cur = head;
-	while (cur)
-	{
-		printf("==== NEW CMD ====\n");
-
-		// argv 출력
-		if (cur->argv)
-		{
-			i = 0;
-			while (cur->argv[i])
-			{
-				printf("argv[%d] = %s\n", i, cur->argv[i]);
-				i++;
-			}
-		}
-		else
-			printf("argv = (null)\n");
-
-		// infile/outfile/append 출력
-		printf("infile  = %s\n", cur->infile ? cur->infile : "(null)");
-		printf("outfile = %s\n", cur->outfile ? cur->outfile : "(null)");
-		printf("append  = %s\n", cur->append ? cur->append : "(null)");
-		printf("in_type  = %d\n", cur->in_type);
-		printf("out_type  = %d\n", cur->out_type);
-		printf("heredoc_fd = %d\n", cur->heredoc_fd);
-		/*if (cur->in_type == 1 && cur->heredoc_fd >= 0)
-		{
-		
-		    // 디버깅용: heredoc 내용 확인
-		    char buf[1024];
-		    int n;
-		
-		    lseek(cur->heredoc_fd, 0, SEEK_SET); // fd 처음으로
-		    n = read(cur->heredoc_fd, buf, sizeof(buf) - 1);
-		    if (n > 0)
-		    {
-		        buf[n] = '\0';
-		        printf("heredoc content = %s\n", buf);
-		    }
-		}
-		else
-		{
-		    printf("heredoc = (null)\n");
-		}
-		*/
-		cur = cur->next;
-	}
+	return (cmd);
 }

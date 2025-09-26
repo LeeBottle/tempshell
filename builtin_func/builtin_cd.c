@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_cd.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:27:27 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:27:27 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 static char	*get_path(char **argv)
@@ -10,7 +22,7 @@ static char	*get_path(char **argv)
 		if (path == NULL)
 		{
 			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-			shell_sig = 1;
+			g_shell_sig = 1;
 			return (NULL);
 		}
 	}
@@ -25,10 +37,10 @@ static void	chdir_path(char *path)
 	{
 		ft_putstr_fd("minishell: cd: ", 2);
 		perror(path);
-		shell_sig = 1;
+		g_shell_sig = 1;
 	}
 	else
-		shell_sig = 0;
+		g_shell_sig = 0;
 }
 
 void	ft_cd(char **argv)
@@ -42,7 +54,7 @@ void	ft_cd(char **argv)
 	if (i > 2)
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
-		shell_sig = 1;
+		g_shell_sig = 1;
 		return ;
 	}
 	path = get_path(argv);

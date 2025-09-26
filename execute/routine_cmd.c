@@ -1,14 +1,16 @@
-#include "../minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   routine_cmd.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:28:10 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:28:10 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static void	execute_command(t_shell *sh, t_cmd *cmd)
-{
-	if (cmd->argv[0] == NULL)
-		exit(0);
-	if (func_builtin(sh, cmd))
-		exit(shell_sig);
-	else
-		execute_external(sh, cmd);
-}
+#include "../minishell.h"
 
 static void	child_process(t_shell *sh, t_cmd *cmd, int fd[2], int pv_pipe)
 {
@@ -33,7 +35,7 @@ static void	child_process(t_shell *sh, t_cmd *cmd, int fd[2], int pv_pipe)
 	if (cmd->argv[0] == NULL)
 		exit(0);
 	if (func_builtin(sh, cmd))
-		exit(shell_sig);
+		exit(g_shell_sig);
 	else
 		execute_external(sh, cmd);
 }

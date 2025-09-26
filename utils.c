@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:25:54 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:25:55 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_space(char c)
@@ -11,20 +23,22 @@ int	is_quote(char c)
 	return (c == '\'' || c == '\"');
 }
 
-int is_meta(char c)
+int	is_meta(char c)
 {
-	return (c=='|'||c=='<'||c=='>');
+	return (c == '|' || c == '<' || c == '>');
 }
 
-void free_tokens(t_token *t)
+void	free_tokens(t_token *t)
 {
-    while (t)
+	t_token	*n;
+
+	while (t)
 	{
-        t_token *n = t->next;
-        free(t->val);
-        free(t);
-        t = n;
-    }
+		n = t->next;
+		free(t->val);
+		free(t);
+		t = n;
+	}
 }
 
 void	free_split(char **arr)

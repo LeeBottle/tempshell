@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_echo.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:27:30 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:27:31 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 static int	opt(char *argv)
@@ -37,5 +49,5 @@ void	ft_echo(char **argv)
 	}
 	if (newline == 1)
 		ft_putstr_fd("\n", 1);
-	shell_sig = 0;
+	g_shell_sig = 0;
 }

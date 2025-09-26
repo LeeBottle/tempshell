@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_direct.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:27:57 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:27:58 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	handle_redirections(t_cmd *cmd)
@@ -33,7 +45,7 @@ void	is_direct(t_shell *sh, t_cmd *cmds)
 	stdin_backup = dup(STDIN_FILENO);
 	stdout_backup = dup(STDOUT_FILENO);
 	if (handle_redirections(cmds) != 0)
-		shell_sig = 1;
+		g_shell_sig = 1;
 	else
 		func_builtin(sh, cmds);
 	dup2(stdin_backup, STDIN_FILENO);

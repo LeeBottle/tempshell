@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/26 17:27:55 by byeolee           #+#    #+#             */
+/*   Updated: 2025/09/26 17:27:55 by byeolee          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 static int	pre_processing(t_shell *sh, t_cmd *cmds, int *is_pipeline)
@@ -6,11 +18,9 @@ static int	pre_processing(t_shell *sh, t_cmd *cmds, int *is_pipeline)
 		return (0);
 	if (outfile_checker(cmds) != 0)
 	{
-		shell_sig = 1;
+		g_shell_sig = 1;
 		return (0);
 	}
-	if (ft_strncmp(cmds->argv[0], "exit", 5) == 0)
-		return (ft_exit(cmds));
 	if (cmds->next == NULL && is_builtin(cmds))
 	{
 		is_direct(sh, cmds);
@@ -34,7 +44,7 @@ static void	main_loop(t_shell *sh, t_cmd *cmds, int is_pipeline)
 	process_cmd(sh, cmds, &prev_pipe, &last_pid);
 	if (prev_pipe != -1)
 		close(prev_pipe);
-	wait_processes(sh, last_pid, is_pipeline);
+	wait_processes(last_pid, is_pipeline);
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
@@ -43,6 +53,8 @@ int	execute(t_shell *sh, t_cmd *cmds)
 {
 	int	is_pipeline;
 
+	if (ft_strncmp(cmds->argv[0], "exit", 5) == 0)
+		return (ft_exit(cmds));
 	if (!pre_processing(sh, cmds, &is_pipeline))
 		return (0);
 	main_loop(sh, cmds, is_pipeline);
