@@ -63,18 +63,7 @@ typedef struct s_token_list {
 
 typedef struct s_shell {
 	char	**envp;
-	struct s_token	*tokens;
-	struct s_cmd	*cmds; 
 }	t_shell;
-
-typedef struct s_child_info
-{
-	t_shell	*sh;
-	t_cmd	*cmds_head;
-	t_cmd	*current_cmd;
-	int		*fd;
-	int		pv_pipe;
-}	t_child_info;
 
 int		main(int argc, char **argv, char **envp);
 void	sigint_handler(int sig);

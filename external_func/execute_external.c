@@ -31,8 +31,6 @@ static void error_print_path(t_shell *sh, t_cmd *cmd)
 {
 	ft_putstr_fd(cmd->argv[0], 2);
 	ft_putstr_fd(": command not found\n", 2);
-	free_tokens(sh->tokens);
-	free_cmds(sh->cmds);
 	free_envp(sh->envp);
 	exit(127);
 }
@@ -42,8 +40,6 @@ static void error_print_handle(t_shell *sh, t_cmd *cmd, char *path, int is_path_
 	perror(cmd->argv[0]);
 	if (is_path_search)
 		free(path);
-	free_tokens(sh->tokens);
-	free_cmds(sh->cmds);
 	free_envp(sh->envp);
 	exit(126);
 }
