@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:24:19 by byeolee           #+#    #+#             */
-/*   Updated: 2025/09/26 19:17:23 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/26 19:20:36 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_token_list {
 typedef struct s_shell {
 	char	**envp;
 }	t_shell;
+
 
 int		main(int argc, char **argv, char **envp);
 void	sigint_handler(int sig);

@@ -4,3 +4,13 @@
 # parsing/validate_syntax.c
 	if (cur->type == TOK_PIPE)
         return (syntax_error(cur));
+
+# parsing/split_word_append_utils.c
+## env_append
+	else
+	{
+		if (*acc)
+			free(*acc);
+		*acc = ft_strdup(parts[0]);
+	}
+

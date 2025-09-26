@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:26:23 by byeolee           #+#    #+#             */
-/*   Updated: 2025/09/26 19:17:03 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/26 19:34:21 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,10 @@ int	parsing(t_shell *sh, char *input)
 		return (0);
 	}
 	if (pipe_end(sh, &t))
+	{
+		free_tokens(t);
 		return (0);
+	}
 	cmds = token_to_cmd(t);
 	if (cmds)
 		should_exit = execute(sh, cmds);
