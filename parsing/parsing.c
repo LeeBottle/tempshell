@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:26:23 by byeolee           #+#    #+#             */
-/*   Updated: 2025/09/26 19:34:21 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/26 20:44:15 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,14 @@ void	free_cmds(t_cmd *head)
 	}
 }
 
+static void	frees(t_cmd	*cmds, t_token	*t, t_shell *sh)
+{
+	free_tokens(t);
+	free_cmds(cmds);
+	sh->tokens = NULL;
+	sh->cmds_head = NULL;
+}
+
 int	parsing(t_shell *sh, char *input)
 {
 	t_token	*t;
@@ -68,11 +76,12 @@ int	parsing(t_shell *sh, char *input)
 		return (0);
 	}
 	cmds = token_to_cmd(t);
+	sh->tokens = t;
+	sh->cmds_head = cmds;
 	if (cmds)
-		should_exit = execute(sh, cmds);
+		should_exit = execute(sh);
 	else
 		should_exit = 0;
-	free_tokens(t);
-	free_cmds(cmds);
+	frees(cmds, t, sh);
 	return (should_exit);
 }

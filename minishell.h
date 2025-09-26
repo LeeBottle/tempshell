@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:24:19 by byeolee           #+#    #+#             */
-/*   Updated: 2025/09/26 19:20:36 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/26 20:45:39 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,9 @@ typedef struct s_token_list {
 
 typedef struct s_shell {
 	char	**envp;
+	t_token	*tokens;
+	t_cmd	*cmds_head;
 }	t_shell;
-
 
 int		main(int argc, char **argv, char **envp);
 void	sigint_handler(int sig);
@@ -101,9 +102,9 @@ void	heredoc_child(char *limiter, int write_fd);
 void	handle_unclosed_quote(char **acc);
 
 //execute
-int		execute(t_shell *sh, t_cmd *cmd);
+int		execute(t_shell *sh);
 int		outfile_checker(t_cmd *cmds);
-void	process_cmd(t_shell *sh, t_cmd *cmds, int *pv_pipe, pid_t *last_pid);
+void	process_cmd(t_shell *sh, int *pv_pipe, pid_t *last_pid);
 void	wait_processes(pid_t last_pid, int is_pipeline);
 void	is_direct(t_shell *sh, t_cmd *cmds);
 int		handle_redirections(t_cmd *cmd);

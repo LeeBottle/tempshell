@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:48:45 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/26 19:37:17 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/26 19:51:06 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	append_argv(t_cmd *cmd, char *val)
 	new_argv[i] = ft_strdup(val);
 	new_argv[i + 1] = NULL;
 	if (cmd->argv)
-		free_split(cmd->argv); 
+		free_split(cmd->argv);
 	cmd->argv = new_argv;
 }
 
@@ -140,7 +140,10 @@ t_cmd	*token_to_cmd(t_token *tokens)
 	while (cur)
 	{
 		if (pros_token(&cmd, &head, &tail, &cur))
-			return (0);
+		{
+			free_cmds(head);
+			return (NULL);
+		}
 		cur = cur->next;
 	}
 	return (head);
