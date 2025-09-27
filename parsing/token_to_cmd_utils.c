@@ -6,12 +6,11 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 22:58:13 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/26 17:16:46 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/27 13:41:38 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#include <stdio.h>
 
 void	heredoc_parent_close(pid_t pid, int status, \
 	struct termios term_backup, t_cmd *cmd)

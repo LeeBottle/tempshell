@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:48:45 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/26 19:51:06 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/27 13:46:24 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,13 @@ void	append_argv(t_cmd *cmd, char *val)
 	cmd->argv = new_argv;
 }
 
-void	handle_heredoc(t_cmd *cmd, char *limiter)
+void	handle_heredoc(t_cmd *cmd, char *limiter, struct termios term_backup)
 {
 	int				pipefd[2];
 	pid_t			pid;
 	int				status;
-	struct termios	term_backup;
 
 	status = 0;
-	tcgetattr(STDIN_FILENO, &term_backup);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	if (pipe(pipefd) == -1)
@@ -99,13 +97,16 @@ static void	handle_redir(t_cmd *cmd, t_token *tok)
 
 static int	pros_token(t_cmd **cmd, t_cmd **head, t_cmd **tail, t_token **cur)
 {
+	struct termios	term_backup;
+	
+	tcgetattr(STDIN_FILENO, &term_backup);
 	if (!*cmd)
 		*cmd = start_new_cmd(head, tail);
 	if ((*cur)->type == TOK_WORD)
 		append_argv(*cmd, (*cur)->val);
 	else if ((*cur)->type == TOK_HEREDOC && (*cur)->next)
 	{
-		handle_heredoc(*cmd, (*cur)->next->val);
+		handle_heredoc(*cmd, (*cur)->next->val, term_backup);
 		if ((*cmd)->heredoc_interrupted)
 		{
 			*cur = (*cur)->next;
@@ -141,6 +142,7 @@ t_cmd	*token_to_cmd(t_token *tokens)
 	{
 		if (pros_token(&cmd, &head, &tail, &cur))
 		{
+			*cur = *cur->next;
 			free_cmds(head);
 			return (NULL);
 		}

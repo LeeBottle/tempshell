@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:24:19 by byeolee           #+#    #+#             */
-/*   Updated: 2025/09/26 20:45:39 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/27 13:39:50 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int		validate_syntax(t_token *t);
 int		pipe_end(t_shell *sh, t_token **t_head);
 t_cmd	*token_to_cmd(t_token *tokens);
 t_cmd	*start_new_cmd(t_cmd **head, t_cmd **tail);
-void	handle_heredoc(t_cmd *cmd, char *limiter);
+void	handle_heredoc(t_cmd *cmd, char *limiter, struct termios term_backup);
 void	append_argv(t_cmd *cmd, char *val);
 void	heredoc_child(char *limiter, int write_fd);
 void	handle_unclosed_quote(char **acc);
