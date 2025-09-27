@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:48:45 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/27 13:46:24 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/27 14:08:41 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,7 @@ static int	pros_token(t_cmd **cmd, t_cmd **head, t_cmd **tail, t_token **cur)
 	{
 		handle_heredoc(*cmd, (*cur)->next->val, term_backup);
 		if ((*cmd)->heredoc_interrupted)
-		{
-			*cur = (*cur)->next;
 			return (1);
-		}
 		(*cmd)->in_type = 1;
 		*cur = (*cur)->next;
 	}
@@ -143,7 +140,7 @@ t_cmd	*token_to_cmd(t_token *tokens)
 		if (pros_token(&cmd, &head, &tail, &cur))
 		{
 			*cur = *cur->next;
-			free_cmds(head);
+			free_cmds(cmd);
 			return (NULL);
 		}
 		cur = cur->next;
