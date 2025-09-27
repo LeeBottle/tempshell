@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/29 17:48:45 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/27 14:08:41 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/27 14:54:23 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ t_cmd	*token_to_cmd(t_token *tokens)
 	{
 		if (pros_token(&cmd, &head, &tail, &cur))
 		{
-			*cur = *cur->next;
+			cur = cur->next;
 			free_cmds(cmd);
 			return (NULL);
 		}

@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 17:26:23 by byeolee           #+#    #+#             */
-/*   Updated: 2025/09/27 13:34:39 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/27 13:53:29 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	parsing(t_shell *sh, char *input)
     {
 		free_cmds(cmds);
         free_tokens(t);
-        return (1);
+        return (0);
     }
 	sh->tokens = t;
 	sh->cmds_head = cmds;

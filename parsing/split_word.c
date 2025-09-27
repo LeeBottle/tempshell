@@ -6,7 +6,7 @@
 /*   By: byeolee <byeolee@student.42gyeongsan.kr    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 15:58:43 by sejo              #+#    #+#             */
-/*   Updated: 2025/09/26 17:16:46 by byeolee          ###   ########.fr       */
+/*   Updated: 2025/09/27 14:24:32 by byeolee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	split_word(t_shell *sh, char **line, t_token_list *list)
 	acc = ft_strdup("");
 	if (!acc)
 	{
+		free(acc);
 		g_shell_sig = 1;
 		return ;
 	}
